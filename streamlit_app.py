@@ -8,7 +8,8 @@ import tensorflow as tf
 import pickle
 import joblib
 
-pickled_model_app = joblib.load('./web_app.pkl')
+pickled_model_app = pickle.load(open('./web_app.pkl', 'rb'))
+
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
