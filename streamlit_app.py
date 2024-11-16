@@ -70,7 +70,7 @@ def feed_model(dataset, n_past, model, scaler):
     
     return preds
 
-prediction = feed_model(apple_dataset, 21, apple_pickled_model, scaler).tolist()
+prediction = feed_model(apple_dataset, 21, pickled_model_app, scaler).tolist()
 # create a dataframe
 pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'],
                         'Adj. Closing Price($)': [ '%.2f' % elem for elem in prediction]})
