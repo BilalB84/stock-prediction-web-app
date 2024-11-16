@@ -5,9 +5,11 @@ import yfinance as yf
 from datetime import datetime
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
+import keras
 import pickle
 import joblib
 from tensorflow.keras.models import load_model
+from keras_pickle_wrapper import KerasPickleWrapper
 
 pickled_model_app = joblib.load('./web_app.pkl')
 
