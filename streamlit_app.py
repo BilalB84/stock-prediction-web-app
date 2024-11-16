@@ -70,7 +70,7 @@ def feed_model(dataset, n_past, model, scaler):
     testX = np.array(dataX)
     
     # Make predictions using the model
-    pred_initial = model().predict(testX)
+    pred_initial = model.predict(testX)
     
     # Repeat predictions and reshape to original scale
     pred_array = np.repeat(pred_initial, 5, axis = -1)
@@ -78,7 +78,7 @@ def feed_model(dataset, n_past, model, scaler):
     
     return preds
 
-prediction = feed_model(apple_dataset, 21, pickled_model_app, scaler).tolist()
+prediction = feed_model(apple_dataset, 21, model, scaler).tolist()
 # create a dataframe
 pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'],
                         'Adj. Closing Price($)': [ '%.2f' % elem for elem in prediction]})
