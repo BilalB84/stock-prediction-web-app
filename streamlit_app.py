@@ -5,9 +5,10 @@ import yfinance as yf
 from datetime import datetime
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
-from keras.models import load_model
+import pickle
+import joblib
 
-apple_pickled_model = tf.keras.models.load_model('./web.keras')
+pickled_model_app = joblib.load('./web_app.pkl')
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
