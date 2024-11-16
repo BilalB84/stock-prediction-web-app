@@ -9,9 +9,15 @@ import keras
 import pickle
 import joblib
 from keras.models import load_model
-from keras_pickle_wrapper import KerasPickleWrapper
+from keras.layers import LSTM
 
-pickled_model_app = load_model('./app_model.h5', compile = False)
+class CustomLSTM(LSTM):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("time_major", None)  # Remove unrecognized argument
+        super().__init__(*args, **kwargs)
+
+
+model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
