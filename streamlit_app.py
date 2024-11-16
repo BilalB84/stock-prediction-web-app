@@ -24,13 +24,8 @@ def On_Balance_Volume(Close, Volume):
     OBV = np.cumsum(np.where(change > 0, Volume, np.where(change < 0, -Volume, 0)))
     return OBV
 
-# Select model variables
-apple_features = ['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
-
-# Create scaler
 scaler = MinMaxScaler(feature_range = (0, 1))
-
-def apple_process(scaler, apple_features):
+def apple_process():
     # Determine end and start dates for dataset download
     end = datetime.now()
     start = datetime(end.year, end.month - 2, end.day)
@@ -52,13 +47,12 @@ def apple_process(scaler, apple_features):
     apple_df['ma_3_days'] = apple_df['adj_close'].rolling(3).mean()
 
     # Filter and preprocess the dataset
-    apple_dset = apple_df.filter(apple_features)
+    apple_dset = apple_df[['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']]
     apple_dset.dropna(axis=0, inplace=True)
     apple_test_scaled = scaler.fit_transform(apple_dset)
-
     return apple_test_scaled
 
-apple_dataset = apple_process(scaler, apple_features)
+apple_dataset = apple_process()
 
 def feed_model(dataset, n_past, model, scaler):
     # Create X from the dataset
