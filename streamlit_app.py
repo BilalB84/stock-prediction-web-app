@@ -7,9 +7,9 @@ from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
 import pickle
 import joblib
+from tensorflow.keras.models import load_model
 
-pickled_model_app = pickle.load(open('./web_app.pkl', 'rb'))
-
+pickled_model_app = load_model('./app_model.h5', compile = False)
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
