@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
 from keras.models import load_model
 
-apple_pickled_model = apple_model2 = tf.keras.models.load_model('app_model.h5')
+apple_pickled_model = tf.keras.models.load_model('app_model.h5')
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
