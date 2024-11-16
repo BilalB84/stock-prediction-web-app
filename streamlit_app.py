@@ -11,7 +11,7 @@ import joblib
 from tensorflow.keras.models import load_model
 from keras_pickle_wrapper import KerasPickleWrapper
 
-pickled_model_app = joblib.load('./web_app.pkl')
+pickled_model_app = joblib.load('./web_app2.pkl')
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
