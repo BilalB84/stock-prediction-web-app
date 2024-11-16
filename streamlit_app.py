@@ -57,8 +57,10 @@ apple_dataset = apple_process()
 def feed_model(dataset, n_past, model, scaler):
     # Create X from the dataset
     dataX = []
+    dataY = []
     for i in range(n_past, len(dataset)):
         dataX.append(dataset[i - n_past:i, 0:dataset.shape[1]])
+        dataY.append(dataset[i,0])
     testX = np.array(dataX)
     
     # Make predictions using the model
