@@ -9,7 +9,7 @@ import pickle
 import joblib
 from tensorflow.keras.models import load_model
 
-pickled_model_app = load_model('./app_model.h5', compile = False)
+pickled_model_app = joblib.load('./web_app.pkl')
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
