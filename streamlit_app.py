@@ -62,7 +62,7 @@ def feed_model(dataset, n_past, model, scaler):
     testX = np.array(dataX)
     
     # Make predictions using the model
-    pred_initial = model.predict(testX)
+    pred_initial = model().predict(testX)
     
     # Repeat predictions and reshape to original scale
     pred_array = np.repeat(pred_initial, 5, axis = -1)
