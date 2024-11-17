@@ -20,11 +20,11 @@ model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compil
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
-tab1.header('StockSense AI Web Application')
+tab1.header('🔮 StockSense AI Web Application')
 
-with tab1.expander("AI Model"):
-    multi = ''':magenta[This project's predictive AI is multivariate LSTM neural networks. 
-    Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
+# Model Info: 🔮 Multivariate Time Series Stock Forecast via LSTM💰
+with tab1.expander("AI Model Infographics"):
+    multi = ''':violet[This project's predictive AI is multivariate LSTM neural networks. Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
     Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.]'''
     st.markdown(multi)
 
@@ -133,15 +133,6 @@ else:
 tab1.subheader("Insight Summary")
 tab1.markdown(insight, unsafe_allow_html=True)
 
-
-
-# Model Info: 🔮 Multivariate Time Series Stock Forecast via LSTM💰
-
-
-
-
-# Display warning
-tab1.info('This work is not investment advice! It is done as a part of my data science project.')
 with tab1.expander("Warning"):
-    st.markdown(''':red['This work is not investment advice! It is done as a part of my data science project.']''')
+    st.markdown(''':red[This work is not investment advice! It is a merely data science research.]''')
 tab1.markdown(''':rainbow[End-to-end project is done by] and :blue-background[Sevilay Munire Girgin]''')
