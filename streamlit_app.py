@@ -129,6 +129,13 @@ with tab1.col2:
     st.write(' ')
     st.write(' ')
     st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
     st.markdown(insight, unsafe_allow_html=True)
 
 with tab1.expander("AI Model Infographics"):
