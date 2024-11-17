@@ -19,6 +19,7 @@ model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compil
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
 tab1.header('🔮 StockSense AI Web Application')
+tab1.header('🔮 StockSense AI Web Application')
 
 # Define function to get raw data
 def raw_data():
