@@ -7,4 +7,5 @@ scikit-learn>=1.2.2
 seaborn>=0.12.2
 tensorflow>=2.12.0
 yfinance>=0.2.41
-keras-pickle-wrapper
+plotly
+pytz
