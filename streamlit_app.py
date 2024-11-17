@@ -15,6 +15,7 @@ class CustomLSTM(LSTM):
         super().__init__(*args, **kwargs)
 
 model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
