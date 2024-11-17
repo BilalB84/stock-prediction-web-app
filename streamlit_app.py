@@ -21,10 +21,10 @@ model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compil
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
 tab1.header('🔮 StockSense AI Web Application')
+tab1.header('🔮 StockSense AI Web Application')
 
-# Model Info: 🔮 Multivariate Time Series Stock Forecast via LSTM💰
 with tab1.expander("AI Model Infographics"):
-    multi = ''':violet[This project's predictive AI is multivariate LSTM neural networks. Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
+    multi = ''':blue[This project's predictive AI is multivariate LSTM neural networks. Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
     Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.]'''
     st.markdown(multi)
 
