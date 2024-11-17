@@ -97,9 +97,9 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 
 # set the index to the 'name' column
 pred_df.set_index('Predicted Day', inplace=True)
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>The next predicted stock price is:</strong></div>"""
-# Display result
 
+# Display result
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Apple Stock Prediction For Next 5 Days</strong></div>"""
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
     st.markdown(title, unsafe_allow_html=True)
@@ -126,8 +126,6 @@ else:
 
 # Display the insight using Markdown with HTML formatting
 with tab1.col2:
-    st.write(' ')
-    st.write(' ')
     st.write(' ')
     st.write(' ')
     st.write(' ')
