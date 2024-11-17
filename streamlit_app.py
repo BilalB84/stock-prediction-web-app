@@ -136,7 +136,7 @@ with tab1.col1:
 
 with tab1.col2:
     with tab1.expander("Variables Used by AI"):
-    tab1.image('./images/variable-table.png')
+        tab1.image('./images/variable-table.png')
     
 tab1.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
 
