@@ -141,6 +141,7 @@ tab1.col1, tab1.col2, tab1.col3 = tab1.columns(3)
 with tab1.col1:
     with st.popover("AI Model Infographics"):
         st.markdown(multi)
+        st.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
 
 with tab1.col2:
     with st.popover("Variables Used by AI"):
@@ -150,11 +151,6 @@ with tab1.col3:
     with st.popover("Model Metrics"):
         st.image("./images/variable-table.png")
 
-tab1.col1, tab1.col2 = tab1.columns(2)
-with tab1.col1: 
-    st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 
-with tab1.col2: 
-    st.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
-
+tab1.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 tab1.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
