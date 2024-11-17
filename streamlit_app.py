@@ -103,7 +103,7 @@ title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-hei
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
     st.markdown(title, unsafe_allow_html=True)
-    st.dataframe(pred_df)
+    st.write(pred_df)
 
 actual_values  = raw_apple_df['adj_close'].values.tolist()
 
