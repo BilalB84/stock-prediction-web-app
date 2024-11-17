@@ -363,7 +363,7 @@ with tab3.sidebar:
             if indicator == 'SMA 20':
                 fig.add_trace(go.Scatter(x=data['Datetime'], y=data['SMA_20'], name='SMA 20'))
             elif indicator == 'EMA 20':
-            fig.add_trace(go.Scatter(x=data['Datetime'], y=data['EMA_20'], name='EMA 20'))
+                fig.add_trace(go.Scatter(x=data['Datetime'], y=data['EMA_20'], name='EMA 20'))
     
         # Format graph
         fig.update_layout(title=f'{ticker} {time_period.upper()} Chart',
