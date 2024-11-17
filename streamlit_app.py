@@ -276,10 +276,6 @@ from datetime import timedelta
 import pytz
 import ta
 
-##########################################################################################
-## PART 1: Define Functions for Pulling, Processing, and Creating Techincial Indicators ##
-##########################################################################################
-
 # Fetch stock data based on the ticker, period, and interval
 def fetch_stock_data(ticker, period, interval):
     end_date = datetime.now()
@@ -299,7 +295,6 @@ def process_data(data):
     data.rename(columns={'Date': 'Datetime'}, inplace=True)
     return data
 
-
 # Calculate basic metrics from the stock data
 def calculate_metrics(data):
     last_close = data['Close'].iloc[-1]
@@ -317,24 +312,16 @@ def add_technical_indicators(data):
     data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
     return data
 
-###############################################
-## PART 2: Creating the Dashboard App layout ##
-###############################################
-
-
 # Set up Streamlit page layout
-st.set_page_config(layout="wide")
-st.title('Real Time Stock Dashboard')
-
-
-# 2A: SIDEBAR PARAMETERS ############
+tab3.set_page_config(layout="wide")
+tab3.title('StockSense AI: Real Time Stock Dashboard')
 
 # Sidebar for user input parameters
-st.sidebar.header('Chart Parameters')
-ticker = st.sidebar.text_input('Ticker', 'ADBE')
-time_period = st.sidebar.selectbox('Time Period', ['1d', '1wk', '1mo', '1y', 'max'])
-chart_type = st.sidebar.selectbox('Chart Type', ['Candlestick', 'Line'])
-indicators = st.sidebar.multiselect('Technical Indicators', ['SMA 20', 'EMA 20'])
+tab3.sidebar.header('Chart Parameters')
+ticker = tab3.sidebar.text_input('Ticker', 'ADBE')
+time_period = tab3.sidebar.selectbox('Time Period', ['1d', '1wk', '1mo', '1y', 'max'])
+chart_type = tab3.sidebar.selectbox('Chart Type', ['Candlestick', 'Line'])
+indicators = tab3.sidebar.multiselect('Technical Indicators', ['SMA 20', 'EMA 20'])
 
 # Mapping of time periods to data intervals
 interval_mapping = {
@@ -344,11 +331,8 @@ interval_mapping = {
     '1y': '1wk',
     'max': '1wk'}
 
-
-# 2B: MAIN CONTENT AREA ############
-
 # Update the dashboard based on user input
-if st.sidebar.button('Update'):
+if tab3.sidebar.button('Update'):
     data = fetch_stock_data(ticker, time_period, interval_mapping[time_period])
     data = process_data(data)
     data = add_technical_indicators(data)
@@ -356,12 +340,12 @@ if st.sidebar.button('Update'):
     last_close, change, pct_change, high, low, volume = calculate_metrics(data)
     
     # Display main metrics
-    st.metric(label=f"{ticker} Last Price", value=f"{last_close:.2f} USD", delta=f"{change:.2f} ({pct_change:.2f}%)")
+    tab3.metric(label=f"{ticker} Last Price", value=f"{last_close:.2f} USD", delta=f"{change:.2f} ({pct_change:.2f}%)")
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("High", f"{high:.2f} USD")
-    col2.metric("Low", f"{low:.2f} USD")
-    col3.metric("Volume", f"{volume:,}")
+    tab3.col1, tab3.col2, tab3.col3 = tab3.columns(3)
+    tab3.col1.metric("High", f"{high:.2f} USD")
+    tab3.col2.metric("Low", f"{low:.2f} USD")
+    tab3.col3.metric("Volume", f"{volume:,}")
 
 # Plot the stock price chart
     fig = go.Figure()
@@ -389,17 +373,15 @@ if st.sidebar.button('Update'):
     st.plotly_chart(fig, use_container_width=True)
     
     # Display historical data and technical indicators
-    st.subheader('Historical Data')
-    st.dataframe(data[['Datetime', 'Open', 'High', 'Low', 'Close', 'Volume']])
+    tab3.subheader('Historical Data')
+    tab3.dataframe(data[['Datetime', 'Open', 'High', 'Low', 'Close', 'Volume']])
     
-    st.subheader('Technical Indicators')
-    st.dataframe(data[['Datetime', 'SMA_20', 'EMA_20']])
+    tab3.subheader('Technical Indicators')
+    tab3.dataframe(data[['Datetime', 'SMA_20', 'EMA_20']])
 
-
-# 2C: SIDEBAR PRICES ############
 
 # Sidebar section for real-time stock prices of selected symbols
-st.sidebar.header('Real-Time Stock Prices')
+tab3.sidebar.header('Real-Time Stock Prices')
 stock_symbols = ['AAPL', 'GOOGL', 'AMZN', 'MSFT']
 for symbol in stock_symbols:
     real_time_data = fetch_stock_data(symbol, '1d', '1m')
@@ -411,6 +393,6 @@ for symbol in stock_symbols:
         st.sidebar.metric(f"{symbol}", f"{last_price:.2f} USD", f"{change:.2f} ({pct_change:.2f}%)")
 
 # Sidebar information section
-st.sidebar.subheader('About')
-st.sidebar.info('This dashboard provides stock data and technical indicators for various time period
+tab3.sidebar.subheader('About')
+tab3.sidebar.info('This dashboard provides stock data and technical indicators for various time period. Use the sidebar to customize your view.')
     
