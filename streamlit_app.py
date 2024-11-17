@@ -97,12 +97,12 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 
 # set the index to the 'name' column
 pred_df.set_index('Predicted Day', inplace=True)
-
+title = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"></div>"""
 # Display result
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
-    st.subheader('Apple Stock Prediction For Next 5 Days')
-    st.write(pred_df)
+    st.markdown(title, unsafe_allow_html=True)
+    st.dataframe(pred_df)
 
 actual_values  = raw_apple_df['adj_close'].values.tolist()
 
@@ -125,11 +125,6 @@ else:
 
 # Display the insight using Markdown with HTML formatting
 with tab1.col2:
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
     st.write(' ')
     st.write(' ')
     st.write(' ')
