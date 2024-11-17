@@ -112,16 +112,19 @@ if actual_values and prediction:
     next_predicted_price = prediction[0]
 
     percent_change = (next_predicted_price - last_actual_price) / last_actual_price * 100
-    insight = (
-        f"The next predicted stock price is **${next_predicted_price:.2f}**, "
-        f"compared to the last actual price of **${last_actual_price:.2f}**. "
-        f"This indicates a **{percent_change:+.2f}%** change."
-    )
-else:
-    insight = "Not enough data to generate insights."
 
-# Display the insight using Markdown for proper formatting
-tab1.markdown(insight)
+    insight = f"""
+    <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+        <strong>The next predicted stock price is:</strong> <span style="color: #4CAF50;">${next_predicted_price:.2f}</span><br>
+        <strong>Last actual price:</strong> <span style="color: #FF5722;">${last_actual_price:.2f}</span><br>
+        <strong>Change:</strong> <span style="color: {'#4CAF50' if percent_change >= 0 else '#FF5722'};">{percent_change:+.2f}%</span>
+    </div>
+    """
+else:
+    insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
+
+# Display the insight using Markdown with HTML formatting
+st.markdown(insight, unsafe_allow_html=True)
 
 
 
