@@ -99,9 +99,12 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 
 # set the index to the 'name' column
 pred_df.set_index('Predicted Day', inplace=True)
+
 # Display result
-tab1.subheader('Apple Stock Prediction For Next 5 Days')
-tab1.write(pred_df)
+tab1.col1, tab1.col2 = tab1.columns(2)
+with tab1.col1:
+    st.subheader('Apple Stock Prediction For Next 5 Days')
+    st.write(pred_df)
 
 actual_values  = raw_apple_df['adj_close'].values.tolist()
 
@@ -123,23 +126,27 @@ else:
     insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
 
 # Display the insight using Markdown with HTML formatting
-tab1.subheader("Insight Summary")
-tab1.markdown(insight, unsafe_allow_html=True)
+with tab1.col2:
+    st.subheader("Insight Summary")
+    st.markdown(insight, unsafe_allow_html=True)
+
+
+with st.expander("AI Model Infographics"):
+    multi = '''This project's predictive AI is multivariate LSTM neural networks.  
+    Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
+    Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.'''
+    st.markdown(multi)
+
+with st.expander("Variables Used by AI"):
+    st.image('./images/variable-table.png')
+    
 
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
-    with st.expander("AI Model Infographics"):
-        multi = '''This project's predictive AI is multivariate LSTM neural networks.   
-        Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
-        Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.'''
-        st.markdown(multi)
+    st.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
 
 with tab1.col2:
-    with st.expander("Variables Used by AI"):
-        st.image('./images/variable-table.png')
-    
-tab1.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
+    with tab1.expander("Warning"):
+        st.markdown(''':red[This work is not investment advice! It is merely a data science research.]''')
 
-with tab1.expander("Warning"):
-    st.markdown(''':red[This work is not investment advice! It is merely a data science research.]''')
 tab1.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
