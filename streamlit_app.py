@@ -313,7 +313,7 @@ def add_technical_indicators(data):
     return data
 
 # Set up Streamlit page layout
-tab3.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 tab3.title('StockSense AI: Real Time Stock Dashboard')
 
 # Sidebar for user input parameters
