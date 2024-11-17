@@ -23,6 +23,25 @@ tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 tab1.header('LSTM Forecast App')
 tab1.subheader('Apple Stock')
 
+# Define function to get raw data
+def raw_data():
+    # Determine end and start dates for dataset download
+    end = datetime.now()
+    start = datetime(end.year, end.month - 2, end.day)
+
+    # Download Apple's dataset between start and end dates
+    apple_df = yf.download('AAPL', start=start, end=end)
+
+    # Rename columns of the Apple DataFrame
+    column_dict = {'Open': 'open', 'High': 'high', 'Low': 'low',
+                   'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}
+    apple_df = apple_df.rename(columns=column_dict)
+    apple_df.index.names = ['date']
+    return apple_df
+raw_apple_df = raw_data()
+# Display result
+tab1.write(raw_apple_df)
+
 # Define function to calculate 'On Balance Volume (OBV)'
 def On_Balance_Volume(Close, Volume):
     change = Close.diff()
@@ -83,8 +102,20 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 
 # set the index to the 'name' column
 pred_df.set_index('Predicted Day', inplace=True)
-
 # Display result
 tab1.write(pred_df)
 
+
+
+
+
+
+
+# Model Info: 🔮 Multivariate Time Series Stock Forecast via LSTM💰
+
+
+
+
+# Display warning
+tab1.info('This work is not investment advice! It is done as a part of my data science project.')
 tab1.markdown(''':rainbow[End-to-end project is done by] and :blue-background[Sevilay Munire Girgin]''')
