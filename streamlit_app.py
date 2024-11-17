@@ -99,7 +99,7 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 pred_df.set_index('Predicted Day', inplace=True)
 
 # Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"></div>"""
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;">LOL</div>"""
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
     st.markdown(title, unsafe_allow_html=True)
