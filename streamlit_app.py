@@ -6,8 +6,6 @@ from datetime import datetime
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
 import keras
-import pickle
-import joblib
 from keras.models import load_model
 from keras.layers import LSTM
 
