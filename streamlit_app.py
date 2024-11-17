@@ -1,4 +1,4 @@
-import streamlit as st
+.import streamlit as st
 import pandas as pd
 import numpy as np
 import yfinance as yf
@@ -160,8 +160,8 @@ tab1.warning('This work is not investment advice! It is merely a data science re
 
 #-----------------------
 tab2.header('🔮 StockSense AI Web Application')
-tab1.info('StockSense AI uses real-time stock values via Yahoo Finance')
-tab1.write(' ')
+tab2.info('StockSense AI uses real-time stock values via Yahoo Finance')
+tab2.write(' ')
 
 # Define function to get raw data
 def raw_google_data():
@@ -193,26 +193,26 @@ def google_process(df):
 
 google_dataset = google_process(raw_google_df)
 
-def feed_google_model(dataset, n_past, model, scaler):
+def feed_google_model(dataset, n_past, modelname, scaler):
     # Create X from the dataset
-    dataX = []
-    dataY = []
+    GdataX = []
+    GdataY = []
     for i in range(n_past, len(dataset)):
-        dataX.append(dataset[i - n_past:i, 0:dataset.shape[1]])
-        dataY.append(dataset[i,0])
-    testX = np.array(dataX)
+        GdataX.append(dataset[i - n_past:i, 0:dataset.shape[1]])
+        GdataY.append(dataset[i,0])
+    GtestX = np.array(GdataX)
     
     # Make predictions using the model
-    pred_initial = model.predict(testX)
+    pred_google = modelname.predict(GtestX)
     
     # Repeat predictions and reshape to original scale
-    pred_array = np.repeat(pred_initial, 5, axis = -1)
-    preds = scaler.inverse_transform(np.reshape(pred_array, (len(pred_initial), 5)))[:5, 0]
-    return preds
+    pred_google_array = np.repeat(pred_google, 6, axis = -1)
+    preds_google = scaler.inverse_transform(np.reshape(pred_google_array, (len(pred_google), 6)))[:5, 0]
+    return preds_google
 
 google_prediction = feed_google_model(google_dataset, 21, google_model, scaler).tolist()
 # create a dataframe
-google_pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'], 'Adj. Closing Price($)': [ '%.2f' % elem for elem in prediction]})
+google_pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'], 'Adj. Closing Price($)': [ '%.2f' % elem for elem in google_prediction]})
 
 # set the index to the 'name' column
 google_pred_df.set_index('Predicted Day', inplace=True)
