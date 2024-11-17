@@ -16,7 +16,6 @@ class CustomLSTM(LSTM):
         kwargs.pop("time_major", None)  # Remove unrecognized argument
         super().__init__(*args, **kwargs)
 
-
 model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
@@ -63,10 +62,8 @@ apple_dataset = apple_process()
 def feed_model(dataset, n_past, model, scaler):
     # Create X from the dataset
     dataX = []
-    dataY = []
     for i in range(n_past, len(dataset)):
         dataX.append(dataset[i - n_past:i, 0:dataset.shape[1]])
-        dataY.append(dataset[i,0])
     testX = np.array(dataX)
     
     # Make predictions using the model
@@ -75,7 +72,6 @@ def feed_model(dataset, n_past, model, scaler):
     # Repeat predictions and reshape to original scale
     pred_array = np.repeat(pred_initial, 5, axis = -1)
     preds = scaler.inverse_transform(np.reshape(pred_array, (len(pred_initial), 5)))[:5, 0]
-    
     return preds
 
 prediction = feed_model(apple_dataset, 21, model, scaler).tolist()
@@ -87,6 +83,6 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 pred_df.set_index('Predicted Day', inplace=True)
 
 # Display result
-tab1.info(f"Result: {pred_df}")
+tab1.pred_df
 
 tab1.markdown(''':rainbow[End-to-end project is done by] and :blue-background[Sevilay Munire Girgin]''')
