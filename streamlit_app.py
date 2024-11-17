@@ -125,7 +125,6 @@ else:
 
 # Display the insight using Markdown with HTML formatting
 with tab1.col2:
-    st.subheader("Insight Summary")
     st.markdown(insight, unsafe_allow_html=True)
 
 
@@ -144,7 +143,7 @@ with tab1.col1:
     st.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
 
 with tab1.col2:
-    with tab1.expander("Warning"):
+    with st.expander("Warning"):
         st.markdown(''':red[This work is not investment advice! It is merely a data science research.]''')
 
 tab1.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
