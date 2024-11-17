@@ -312,27 +312,25 @@ def add_technical_indicators(data):
     data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
     return data
 
-tab3.subheader('StockSense AI: Real Time Stock Dashboard')
+with tab3:
+    st.subheader("StockSense AI: Real-Time Stock Dashboard")
+    # Sidebar for user input parameters
+    st.sidebar.header('Chart Parameters')
+    ticker = st.sidebar.text_input('Ticker', 'ADBE')
+    time_period = st.sidebar.selectbox('Time Period', ['1d', '1wk', '1mo', '1y', 'max'])
+    chart_type = st.sidebar.selectbox('Chart Type', ['Candlestick', 'Line'])
+    indicators = st.sidebar.multiselect('Technical Indicators', ['SMA 20', 'EMA 20'])
 
-# Sidebar for user input parameters
-with tab3.sidebar:
-    st.header('Chart Parameters')
-    ticker = st.text_input('Ticker', 'ADBE')
-    time_period = st.selectbox('Time Period', ['1d', '1wk', '1mo', '1y', 'max'])
-    chart_type = st.selectbox('Chart Type', ['Candlestick', 'Line'])
-    indicators = st.multiselect('Technical Indicators', ['SMA 20', 'EMA 20'])
+    # Mapping of time periods to data intervals
+    interval_mapping = {
+        '1d': '1m',
+        '1wk': '30m',
+        '1mo': '1d',
+        '1y': '1wk',
+        'max': '1wk'}
 
-# Mapping of time periods to data intervals
-interval_mapping = {
-    '1d': '1m',
-    '1wk': '30m',
-    '1mo': '1d',
-    '1y': '1wk',
-    'max': '1wk'}
-
-# Update the dashboard based on user input
-with tab3.sidebar:
-    if st.button('Update'):
+    # Update the dashboard based on user input
+    if st.sidebar.button('Update'):
         data = fetch_stock_data(ticker, time_period, interval_mapping[time_period])
         data = process_data(data)
         data = add_technical_indicators(data)
@@ -340,13 +338,13 @@ with tab3.sidebar:
         last_close, change, pct_change, high, low, volume = calculate_metrics(data)
     
         # Display main metrics
-        st.metric(label=f"{ticker} Last Price", value=f"{last_close:.2f} USD", delta=f"{change:.2f} ({pct_change:.2f}%)")    
+        st.metric(label=f"{ticker} Last Price", value=f"{last_close:.2f} USD", delta=f"{change:.2f} ({pct_change:.2f}%)")
     
-        st.col1, st.col2, st.col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
         col1.metric("High", f"{high:.2f} USD")
         col2.metric("Low", f"{low:.2f} USD")
         col3.metric("Volume", f"{volume:,}")
-
+    
         # Plot the stock price chart
         fig = go.Figure()
         if chart_type == 'Candlestick':
@@ -379,10 +377,8 @@ with tab3.sidebar:
         st.subheader('Technical Indicators')
         st.dataframe(data[['Datetime', 'SMA_20', 'EMA_20']])
 
-
-# Sidebar section for real-time stock prices of selected symbols
-with tab3.sidebar:
-    st.header('Real-Time Stock Prices')
+    # Sidebar section for real-time stock prices of selected symbols
+    st.sidebar.header('Real-Time Stock Prices')
     stock_symbols = ['AAPL', 'GOOGL', 'AMZN', 'MSFT']
     for symbol in stock_symbols:
         real_time_data = fetch_stock_data(symbol, '1d', '1m')
@@ -391,4 +387,4 @@ with tab3.sidebar:
             last_price = real_time_data['Close'].iloc[-1]
             change = last_price - real_time_data['Open'].iloc[0]
             pct_change = (change / real_time_data['Open'].iloc[0]) * 100
-            st.metric(f"{symbol}", f"{last_price:.2f} USD", f"{change:.2f} ({pct_change:.2f}%)")
+            st.sidebar.metric(f"{symbol}", f"{last_price:.2f} USD", f"{change:.2f} ({pct_change:.2f}%)")
