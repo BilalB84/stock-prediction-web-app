@@ -118,9 +118,9 @@ else:
     insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
 
 # Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;">Apple Stock Prediction For Next 5 Days</div>"""
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Apple Stock Prediction For Next 5 Days</strong></div>"""
 
-if st.button('Get Prediction'):
+if tab1.button('Get Prediction'):
     tab1.col1, tab1.col2 = tab1.columns(2)
     with tab1.col1:
         st.markdown(title, unsafe_allow_html=True)
