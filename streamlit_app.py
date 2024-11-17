@@ -39,8 +39,7 @@ def raw_data():
     apple_df.index.names = ['date']
     return apple_df
 raw_apple_df = raw_data()
-# Display result
-tab1.write(raw_apple_df)
+
 
 # Define function to calculate 'On Balance Volume (OBV)'
 def On_Balance_Volume(Close, Volume):
@@ -105,7 +104,26 @@ pred_df.set_index('Predicted Day', inplace=True)
 # Display result
 tab1.write(pred_df)
 
+actual_values  = raw_apple_df.tolist()
 
+# Calculate the comparison between predicted next price and last actual price
+if actual_values and prediction:
+    last_actual_price = actual_values[-1]
+    next_predicted_price = predicted_values[0]
+    
+    # Calculate percent change
+    percent_change = (next_predicted_price - last_actual_price) / last_actual_price * 100
+    insight = (
+        f"The next predicted stock price is **${next_predicted_price:.2f}**, "
+        f"compared to the last actual price of **${last_actual_price:.2f}**. "
+        f"This indicates a **{percent_change:+.2f}%** change."
+    )
+else:
+    insight = "Not enough data to generate insights."
+
+# Display insights in the app
+st.subheader("Insight Summary")
+st.write(insight)
 
 
 
