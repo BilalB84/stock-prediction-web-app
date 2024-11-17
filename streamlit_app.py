@@ -125,10 +125,10 @@ else:
 
 # Display the insight using Markdown with HTML formatting
 with tab1.col2:
-    st.(' ')
-    st.(' ')
-    st.(' ')
-    st.(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
     st.markdown(insight, unsafe_allow_html=True)
 
 with tab1.expander("AI Model Infographics"):
