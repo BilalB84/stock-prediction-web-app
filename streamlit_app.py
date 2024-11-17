@@ -108,7 +108,7 @@ actual_values  = raw_apple_df['adj_close'].values.tolist()
 
 # Calculate the comparison between predicted next price and last actual price
 if actual_values and prediction:
-    last_actual_price = actual_values[-1]
+    last_actual_price = actual_values[-1][0]
     next_predicted_price = prediction[0]
 
     # Calculate percent change
