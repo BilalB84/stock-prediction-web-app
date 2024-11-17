@@ -104,7 +104,7 @@ pred_df.set_index('Predicted Day', inplace=True)
 # Display result
 tab1.write(pred_df)
 
-actual_values  = raw_apple_df['adj_close'].to_list()
+actual_values  = raw_apple_df['adj_close'].values.tolist()
 
 # Calculate the comparison between predicted next price and last actual price
 if actual_values and prediction:
