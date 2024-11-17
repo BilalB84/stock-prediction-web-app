@@ -85,6 +85,6 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 pred_df.set_index('Predicted Day', inplace=True)
 
 # Display result
-tab1.info(pred_df)
+tab1.write(pred_df)
 
 tab1.markdown(''':rainbow[End-to-end project is done by] and :blue-background[Sevilay Munire Girgin]''')
