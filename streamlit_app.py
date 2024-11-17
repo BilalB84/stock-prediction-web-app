@@ -121,7 +121,7 @@ else:
     insight = "Not enough data to generate insights."
 # Display insights in the app
 st.subheader("Insight Summary")
-st.write(insight)
+st.markdown(insight)
 
 
 
