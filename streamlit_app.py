@@ -135,16 +135,16 @@ with tab1.col2:
 
 
 
-tab3.col1, tab3.col2, tab3.col3 = tab3.columns(3)
-with tab3.col1:
+tab1.col1, tab1.col2, tab1.col3 = tab1.columns(3)
+with tab1.col1:
     with st.popover("AI Model Infographics"):
+        st.image("./images/variable-table.png")
 
-
-with tab3.col2:
+with tab1.col2:
     with st.popover("Variables Used by AI"):
         st.image("./images/variable-table.png")
 
-with tab3.col3:
+with tab1.col3:
     with st.popover("Model Metrics"):
         st.image("./images/variable-table.png")
 
