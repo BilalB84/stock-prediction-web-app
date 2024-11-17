@@ -19,7 +19,6 @@ model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compil
 tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
 
 tab1.header('🔮 StockSense AI Web Application')
-tab1.header('🔮 StockSense AI Web Application')
 
 # Define function to get raw data
 def raw_data():
@@ -99,13 +98,6 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 # set the index to the 'name' column
 pred_df.set_index('Predicted Day', inplace=True)
 
-# Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;">LOL</div>"""
-tab1.col1, tab1.col2 = tab1.columns(2)
-with tab1.col1:
-    st.markdown(title, unsafe_allow_html=True)
-    st.write(pred_df)
-
 actual_values  = raw_apple_df['adj_close'].values.tolist()
 
 # Calculate the comparison between predicted next price and last actual price
@@ -125,13 +117,22 @@ if actual_values and prediction:
 else:
     insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
 
+# Display result
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;">Apple Stock Prediction For Next 5 Days</div>"""
+
+if st.button('Get Prediction'):
+    tab1.col1, tab1.col2 = tab1.columns(2)
+    with tab1.col1:
+        st.markdown(title, unsafe_allow_html=True)
+        st.dataframe(pred_df)
+        
 # Display the insight using Markdown with HTML formatting
-with tab1.col2:
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.markdown(insight, unsafe_allow_html=True)
+    with tab1.col2:
+        st.write(' ')
+        st.write(' ')
+        st.write(' ')
+        st.write(' ')
+        st.markdown(insight, unsafe_allow_html=True)
 
 with tab1.expander("AI Model Infographics"):
     multi = '''This project's predictive AI is multivariate LSTM neural networks.  
