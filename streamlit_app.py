@@ -113,14 +113,15 @@ if actual_values and prediction:
 
     percent_change = (next_predicted_price - last_actual_price) / last_actual_price * 100
     insight = (
-        f"The next predicted stock price is $ {next_predicted_price}, compared to the last actual price of $ {last_actual_price}. "
-        f"This indicates a {percent_change} % change."
+        f"The next predicted stock price is **${next_predicted_price:.2f}**, "
+        f"compared to the last actual price of **${last_actual_price:.2f}**. "
+        f"This indicates a **{percent_change:+.2f}%** change."
     )
 else:
     insight = "Not enough data to generate insights."
-# Display insights in the app
-tab1.subheader("Insight Summary")
-tab1.info(insight)
+
+# Display the insight using Markdown for proper formatting
+tab1.markdown(insight)
 
 
 
