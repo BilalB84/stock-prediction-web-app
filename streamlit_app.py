@@ -119,8 +119,8 @@ if actual_values and prediction:
 else:
     insight = "Not enough data to generate insights."
 # Display insights in the app
-st.subheader("Insight Summary")
-st.markdown(insight)
+tab1.subheader("Insight Summary")
+tab1.info(insight)
 
 
 
