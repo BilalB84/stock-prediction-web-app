@@ -124,7 +124,8 @@ else:
     insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
 
 # Display the insight using Markdown with HTML formatting
-st.markdown(insight, unsafe_allow_html=True)
+tab1.subheader("Insight Summary")
+tab1.markdown(insight, unsafe_allow_html=True)
 
 
 
