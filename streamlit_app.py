@@ -138,10 +138,7 @@ with tab1.col2:
 tab3.col1, tab3.col2, tab3.col3 = tab3.columns(3)
 with tab3.col1:
     with st.popover("AI Model Infographics"):
-        multi = '''This project's predictive AI is multivariate LSTM neural networks.  
-    	Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
-    	Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.'''
-    	st.markdown(multi)
+
 
 with tab3.col2:
     with st.popover("Variables Used by AI"):
