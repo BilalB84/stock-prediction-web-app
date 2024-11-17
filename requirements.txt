@@ -9,3 +9,4 @@ tensorflow>=2.12.0
 yfinance>=0.2.41
 plotly
 pytz
+ta
