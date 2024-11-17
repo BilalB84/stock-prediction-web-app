@@ -16,7 +16,7 @@ class CustomLSTM(LSTM):
 
 model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
-tab1, tab2 = st.tabs(["APPLE Stock", "GOOGLE Stock"])
+tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
 tab1.header('🔮 StockSense AI Web Application')
 
@@ -99,7 +99,7 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 pred_df.set_index('Predicted Day', inplace=True)
 
 # Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Apple Stock Prediction For Next 5 Days</strong></div>"""
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Apple Share Prediction For Next 5 Days</strong></div>"""
 
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
@@ -151,6 +151,97 @@ with tab1.col3:
     with st.popover("Model Metrics"):
         st.image("./images/variable-table.png")
 
-
 tab1.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 tab1.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
+
+#-----------------------
+tab2.header('🔮 StockSense AI Web Application')
+
+# Define function to get raw data
+def raw_google_data():
+    # Determine end and start dates for dataset download
+    end = datetime.now()
+    start = datetime(end.year, end.month - 2, end.day)
+
+    # Download Apple's dataset between start and end dates
+    google_df = yf.download('GOOGL', start=start, end=end)
+    
+    column_dict = {'Open': 'open', 'High': 'high', 'Low': 'low',
+                   'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}
+    google_df = google_df.rename(columns=column_dict)
+    google_df.index.names = ['date']
+    return google_df
+raw_google_df = raw_google_data()
+
+def google_process(df):
+    # Add additional calculated features
+    df['dollar_volume'] = (df['adj_close'] * df['volume']) / 1e6
+    df['obv'] = On_Balance_Volume(df['close'], df['volume'])
+    df['ma_3_days'] = df['adj_close'].rolling(3).mean()
+    df['macd']
+    # Filter and preprocess the dataset
+    google_dset = df[['adj_close', 'volume', 'dollar_volume', 'obv', 'ma_3_days', 'macd']]
+    google_dset.dropna(axis=0, inplace=True)
+    google_test_scaled = scaler.fit_transform(apple_dset)
+    return google_test_scaled
+
+google_dataset = google_process(raw_google_df)
+
+def feed_google_model(dataset, n_past, model, scaler):
+    # Create X from the dataset
+    dataX = []
+    dataY = []
+    for i in range(n_past, len(dataset)):
+        dataX.append(dataset[i - n_past:i, 0:dataset.shape[1]])
+        dataY.append(dataset[i,0])
+    testX = np.array(dataX)
+    
+    # Make predictions using the model
+    pred_initial = model.predict(testX)
+    
+    # Repeat predictions and reshape to original scale
+    pred_array = np.repeat(pred_initial, 5, axis = -1)
+    preds = scaler.inverse_transform(np.reshape(pred_array, (len(pred_initial), 5)))[:5, 0]
+    return preds
+
+google_prediction = feed_google_model(google_dataset, 21, google_model, scaler).tolist()
+# create a dataframe
+google_pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'], 'Adj. Closing Price($)': [ '%.2f' % elem for elem in prediction]})
+
+# set the index to the 'name' column
+google_pred_df.set_index('Predicted Day', inplace=True)
+
+# Display result
+title2 = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Google Share Prediction For Next 5 Days</strong></div>"""
+
+tab2.col1, tab2.col2 = tab2.columns(2)
+with tab2.col1:
+    st.markdown(title2, unsafe_allow_html=True)
+    st.dataframe(google_pred_df)
+
+actual_google_values  = raw_google_df['adj_close'].values.tolist()
+
+# Calculate the comparison between predicted next price and last actual price
+if actual_google_values and google_prediction:
+    last_actual_price = actual_google_values[-1][0]
+    next_predicted_price = google_prediction[0]
+
+    percent_change = (next_predicted_price - last_actual_price) / last_actual_price * 100
+
+    insight2 = f"""
+    <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+        <strong>The next predicted Google price is:</strong> <span style="color: #4CAF50;">${next_predicted_price:.2f}</span><br>
+        <strong>Last actual Google price:</strong> <span style="color: #FF5722;">${last_actual_price:.2f}</span><br>
+        <strong>Change:</strong> <span style="color: {'#4CAF50' if percent_change >= 0 else '#FF5722'};">{percent_change:+.2f}%</span>
+    </div>
+    """
+else:
+    insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
+
+# Display the insight using Markdown with HTML formatting
+with tab2.col2:
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.markdown(insight2, unsafe_allow_html=True)
