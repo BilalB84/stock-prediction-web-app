@@ -133,12 +133,14 @@ with tab1.col2:
     st.write(' ')
     st.markdown(insight, unsafe_allow_html=True)
 
-
+multi = '''This project's predictive AI is multivariate LSTM neural networks.  
+Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
+Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.'''
 
 tab1.col1, tab1.col2, tab1.col3 = tab1.columns(3)
 with tab1.col1:
     with st.popover("AI Model Infographics"):
-        st.image("./images/variable-table.png")
+        st.markdown(multi)
 
 with tab1.col2:
     with st.popover("Variables Used by AI"):
@@ -149,21 +151,8 @@ with tab1.col3:
         st.image("./images/variable-table.png")
 
 
-with tab1.expander("AI Model Infographics"):
-    multi = '''This project's predictive AI is multivariate LSTM neural networks.  
-    Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
-    Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.'''
-    st.markdown(multi)
-
-with tab1.expander("Variables Used by AI"):
-    st.image('./images/variable-table.png')
-
-tab1.col1, tab1.col2 = tab1.columns(2)
-with tab1.col1:
-    st.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
-
-with tab1.col2:
-    with st.expander("Warning"):
-        st.markdown(''':red[This work is not investment advice! It is merely a data science research.]''')
+tab1.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
 
 tab1.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
+
+tab1.warning('This work is not investment advice! It is merely a data science research.', icon="⚠️")
