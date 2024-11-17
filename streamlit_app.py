@@ -20,8 +20,10 @@ google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": 
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
 tab1.header('🔮 StockSense AI Web Application')
-info = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong><i>The AI uses real-time stock values via Yahoo Finance</i></strong></div>"""
-tab1.markdown(info, unsafe_allow_html=True)
+#info = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong><i>The AI uses real-time stock values via Yahoo Finance</i></strong></div>"""
+tab1.info('StockSense AI uses real-time stock values via Yahoo Finance')
+tab1.write(' ')
+
 # Define function to get raw data
 def raw_data():
     # Determine end and start dates for dataset download
@@ -158,6 +160,8 @@ tab1.warning('This work is not investment advice! It is merely a data science re
 
 #-----------------------
 tab2.header('🔮 StockSense AI Web Application')
+tab1.info('StockSense AI uses real-time stock values via Yahoo Finance')
+tab1.write(' ')
 
 # Define function to get raw data
 def raw_google_data():
@@ -184,7 +188,7 @@ def google_process(df):
     # Filter and preprocess the dataset
     google_dset = df[['adj_close', 'volume', 'dollar_volume', 'obv', 'ma_3_days', 'macd']]
     google_dset.dropna(axis=0, inplace=True)
-    google_test_scaled = scaler.fit_transform(apple_dset)
+    google_test_scaled = scaler.fit_transform(google_dset)
     return google_test_scaled
 
 google_dataset = google_process(raw_google_df)
