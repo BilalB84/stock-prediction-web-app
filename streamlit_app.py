@@ -98,6 +98,14 @@ pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th
 # set the index to the 'name' column
 pred_df.set_index('Predicted Day', inplace=True)
 
+# Display result
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Apple Stock Prediction For Next 5 Days</strong></div>"""
+
+tab1.col1, tab1.col2 = tab1.columns(2)
+with tab1.col1:
+	st.markdown(title, unsafe_allow_html=True)
+    st.dataframe(pred_df)
+
 actual_values  = raw_apple_df['adj_close'].values.tolist()
 
 # Calculate the comparison between predicted next price and last actual price
@@ -117,22 +125,13 @@ if actual_values and prediction:
 else:
     insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
 
-# Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Apple Stock Prediction For Next 5 Days</strong></div>"""
-
-if tab1.button('Get Prediction'):
-    tab1.col1, tab1.col2 = tab1.columns(2)
-    with tab1.col1:
-        st.markdown(title, unsafe_allow_html=True)
-        st.dataframe(pred_df)
-        
 # Display the insight using Markdown with HTML formatting
-    with tab1.col2:
-        st.write(' ')
-        st.write(' ')
-        st.write(' ')
-        st.write(' ')
-        st.markdown(insight, unsafe_allow_html=True)
+with tab1.col2:
+	st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.markdown(insight, unsafe_allow_html=True)
 
 with tab1.expander("AI Model Infographics"):
     multi = '''This project's predictive AI is multivariate LSTM neural networks.  
