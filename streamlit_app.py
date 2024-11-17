@@ -21,7 +21,7 @@ tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
 tab1.header('🔮 StockSense AI Web Application')
 #info = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong><i>The AI uses real-time stock values via Yahoo Finance</i></strong></div>"""
-tab1.info('StockSense AI uses real-time stock values via Yahoo Finance')
+tab1.info('StockSense AI uses real-time stock values via Yahoo Finance.')
 tab1.write(' ')
 
 # Define function to get raw data
