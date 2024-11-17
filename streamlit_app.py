@@ -113,7 +113,7 @@ if actual_values and prediction:
 
     # Calculate percent change
     insight = (
-        f"The next predicted stock price is **${next_predicted_price:.2f}**, "
+        f"The next predicted stock price is **${next_predicted_price:}**, "
         f"compared to the last actual price of **${last_actual_price:.2f}**. "
     )
 else:
