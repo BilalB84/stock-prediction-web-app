@@ -312,8 +312,6 @@ def add_technical_indicators(data):
     data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
     return data
 
-# Set up Streamlit page layout
-st.set_page_config(layout="wide")
 tab3.title('StockSense AI: Real Time Stock Dashboard')
 
 # Sidebar for user input parameters
