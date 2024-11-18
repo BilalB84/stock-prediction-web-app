@@ -309,7 +309,7 @@ def load_data(ticker, period):
 
 
 # Function to plot raw data using Plotly
-def plot_raw_data():
+def plot_raw_data(data):
     fig = go.Figure()
     
     if technical_indicator == 'Open-Close':
