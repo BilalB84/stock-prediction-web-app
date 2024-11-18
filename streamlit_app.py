@@ -309,7 +309,7 @@ technical_indicator =tab3.selectbox(
 def load_data(ticker, period, interval):
     return yf.download(ticker, period=period, interval=interval).reset_index()
 
-data = load_data(selected_ticker, time_interval)
+data = load_data(selected_ticker, time_period, time_interval)
 # Function to plot raw data using Plotly
 def plot_raw_data(data):
     fig = go.Figure()
