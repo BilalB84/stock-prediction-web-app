@@ -288,29 +288,34 @@ START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
 
-stocks = ('AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME')
-selected_stock = tab3.selectbox('Select dataset for prediction', stocks)
+ticker_list  = ('AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME')
+selected_stock = tab3.selectbox('Select dataset for prediction', ticker_list)
 
-n_years = tab3.slider('Years of prediction:', 1, 4)
-period = n_years * 365
+time_interval = tab3.selectbox(
+    'Select Time Interval:',
+    ['1d', '1wk', '1mo', '1y'])
 
-@st.cache
-def load_data(ticker):
-    data = yf.download(ticker, START, TODAY)
-    data.reset_index(inplace=True)
-    return data
+technical_indicator = tab3.selectbox(
+    'Select Technical Indicator:',
+    ['Open-Close', 'High-Low', 'Stock Volume'])
 
-data = load_data(selected_stock)
+# Download stock data from Yahoo Finance
+@st.cache_data
+def load_data(ticker, period):
+    stock_data = yf.download(ticker, period=period)
+    return stock_data
 
-tab3.subheader('Raw data')
+data = load_data(selected_stock, time_interval)
+tab3.write('Raw data')
 tab3.write(data.tail())
 
-# Plot raw data
-def plot_raw_data():
-	fig = go.Figure()
-	fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
-	fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
-	fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
-	st.plotly_chart(fig)
-	
-plot_raw_data()
+# Show charts based on technical indicator
+tab3.subheader(f'{selected_stock} Data')
+
+if technical_indicator == 'Open-Close':
+    st.line_chart(data[['Open', 'Close']])
+elif technical_indicator == 'High-Low':
+    st.line_chart(data[['High', 'Low']])
+elif technical_indicator == 'Stock Volume':
+    st.line_chart(data['Volume'])
+
