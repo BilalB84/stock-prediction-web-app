@@ -160,16 +160,17 @@ with tab1.col3:
 
 
 dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
-with tab2.container(border = True):
+with tab1.container(border = True):
     st.markdown(dedication, unsafe_allow_html=True)
     st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 
 tab1.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
 
 #-----------------------TAB2---------------
-tab2.header('🔮 StockSense AI Web Application')
-tab2.info('StockSense AI uses real-time stock values via Yahoo Finance.')
-tab2.write(' ')
+with tab2: 
+    st.header('🔮 StockSense AI Web Application')
+    st.info('StockSense AI uses real-time stock values via Yahoo Finance.')
+    st.write(' ')
 
 # Define function to get raw data
 def raw_google_data():
@@ -284,17 +285,11 @@ tab2.warning('This work is not investment advice! It is merely a data science re
 import plotly.graph_objects as go
 from datetime import date
 
-# Tab 3 Content: Stock Dashboard
-tab3.subheader("StockSense AI: Interactive Stock Dashboard")
-tab3.markdown(''':blue-background[Analyze real-time stock data]''')
-
-
-import streamlit as st
-import yfinance as yf
-from datetime import date
-import pandas as pd
-import plotly.graph_objects as go
-
+with tab3: 
+    st.header('🔮 StockSense AI Web Application')
+    st.header('StockSense AI: Interactive Stock Dashboard')
+    st.markdown(''':blue-background[Analyze real-time stock data]''')
+ 
 # Fetch and process data
 def load_data(ticker, start_date):
     stock_data = yf.download(ticker, start=start_date)
@@ -337,19 +332,15 @@ def plot_line_chart(data, x_col, y_cols, title):
         title=title,
         xaxis_title=x_col,
         yaxis_title="Value",
-        template="plotly_white"
-    )
+        template="plotly_white")
     return fig
-
-# Streamlit App
-st.title("StockSense AI: Enhanced Stock Dashboard")
 
 # Inputs
 START_DATE = "2015-01-01"
 ticker_list = ['AAPL', 'AMZN', 'AMD', 'GOOGL', 'INTC', 'META', 'MSFT', 'NVDA', 'TSLA']
-selected_stock = st.selectbox('Select stock:', ticker_list)
+selected_stock = tab3.selectbox('Select stock:', ticker_list)
 
-technical_indicator = st.selectbox(
+technical_indicator = tab3.selectbox(
     'Select Technical Indicator:',
     [
         'Open-Close', 
@@ -358,15 +349,15 @@ technical_indicator = st.selectbox(
         'OBV (On-Balance Volume)', 
         'SMA/EMA', 
         'RSI (Relative Strength Index)', 
-        'Bollinger Bands'
-    ])
+        'Bollinger Bands'])
 
 # Fetch data
 data = load_data(selected_stock, START_DATE)
 data = calculate_indicators(data)
 
-st.write("Raw Data:")
-st.write(data.tail())
+with tab3: 
+    st.write("Raw Data:")
+    st.write(data.tail())
 
 # Display selected chart
 if technical_indicator == 'Open-Close':
@@ -384,4 +375,5 @@ elif technical_indicator == 'RSI (Relative Strength Index)':
 elif technical_indicator == 'Bollinger Bands':
     fig = plot_line_chart(data, 'Date', ['Close', 'BB_Mid', 'BB_Upper', 'BB_Lower'], f"Bollinger Bands for {selected_stock}")
 
-st.plotly_chart(fig)
+with tab3: 
+    st.plotly_chart(fig)
