@@ -156,7 +156,7 @@ with tab1.col2:
 
 with tab1.col3:
     with st.popover("Model Evaluation"):
-        st.image("./images/variable-table.png")
+        st.image("./images/apple-eval.png")
 
 
 dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
@@ -269,11 +269,11 @@ with tab2.col1:
 
 with tab2.col2:
     with st.popover("Variables Used by AI"):
-        st.image("./images/variable-table.png")
+        st.image("./images/google-table.png")
 
 with tab2.col3:
     with st.popover("Model Performance"):
-        st.image("./images/variable-table.png")
+        st.image("./images/google-eval.png")
 
 with tab2.container(border = True):
     st.markdown(dedication, unsafe_allow_html=True)
