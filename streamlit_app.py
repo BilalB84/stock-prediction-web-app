@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 from datetime import datetime
+from datetime import date
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
 import keras
@@ -279,8 +280,6 @@ tab2.warning('This work is not investment advice! It is merely a data science re
 
 
 #--------TAB3----------
-import plotly.graph_objects as go
-from datetime import date
 
 # Tab 3 Content: Stock Dashboard
 tab3.subheader("StockSense AI: Interactive Stock Dashboard")
@@ -289,13 +288,8 @@ tab3.markdown("Analyze real-time stock data.")
 START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
-
-ticker_list  = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
+ticker_list  = ('AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME')
 selected_stock = tab3.selectbox('Select dataset for prediction', ticker_list)
-
-time_interval = tab3.selectbox(
-    'Select Time Interval:',
-    ['1d', '1wk', '1mo', '1y'])
 
 technical_indicator = tab3.selectbox(
     'Select Technical Indicator:',
@@ -303,14 +297,14 @@ technical_indicator = tab3.selectbox(
 
 # Download stock data from Yahoo Finance
 @st.cache_data
-def load_data(ticker, period):
-    stock_data = yf.download(ticker, period=period)
+def load_data(ticker):
+    stock_data = yf.download(ticker, START, TODAY)
     stock_data.set_index('Date', inplace=True)
     return stock_data
 
-data = load_data(selected_stock, time_interval)
+data = load_data(selected_stock)
 tab3.write('Raw data')
-tab3.write(data.tail())
+tab3.write(data.head())
 
 # Show charts based on technical indicator
 tab3.subheader(f'{selected_stock} Data')
