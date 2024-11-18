@@ -157,6 +157,7 @@ with tab1.col3:
     with st.popover("Model Evaluation"):
         st.image("./images/variable-table.png")
 
+tab1.markdown("---")
 tab1.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 tab1.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
 
@@ -268,6 +269,7 @@ with tab2.col3:
     with st.popover("Model Performance"):
         st.image("./images/variable-table.png")
 
+tab2.markdown("---")
 tab2.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 tab2.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
 
@@ -328,13 +330,14 @@ if tab3.button("Generate Dashboard"):
             else:
                 # Preprocess data
                 data.reset_index(inplace=True)
+
+                # Calculate Technical Indicators
                 data['SMA_20'] = ta.trend.sma_indicator(data['Close'], window=20)
                 data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
 
-                # Ensure all columns are 1D
-                data['SMA_20'] = data['SMA_20'].astype(float)
-                data['EMA_20'] = data['EMA_20'].astype(float)
-                data['Close'] = data['Close'].astype(float)
+                # Flatten Indicators to Ensure 1D Arrays
+                data['SMA_20'] = data['SMA_20'].to_numpy().flatten()
+                data['EMA_20'] = data['EMA_20'].to_numpy().flatten()
 
                 # Stock Overview Metrics
                 last_close = data['Close'].iloc[-1]
@@ -382,6 +385,13 @@ if tab3.button("Generate Dashboard"):
 
         except Exception as e:
             tab3.error(f"An error occurred: {str(e)}")
+
+# Footer
+tab3.markdown("---")
+tab3.markdown(':rainbow[Project developed by] :blue-background[Sevilay Munire Girgin]')
+tab3.warning("This dashboard is for research purposes only and does not provide investment advice.", icon="❗")
+
+
 
 # Footer
 tab3.markdown("---")
