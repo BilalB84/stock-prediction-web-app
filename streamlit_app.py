@@ -285,50 +285,33 @@ from datetime import timedelta
 tab3.subheader("StockSense AI: Interactive Stock Dashboard")
 tab3.markdown("Analyze real-time stock data.")
 
-# Selection of stock ticker
-ticker_list = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
-selected_ticker = tab3.selectbox('Select Stock Ticker:', ticker_list)
+START = "2015-01-01"
+TODAY = date.today().strftime("%Y-%m-%d")
 
-# Selection of time period for how much history to retrieve
-time_period = tab3.selectbox(
-    'Select Time Period:',
-    ['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'])
 
-# Selection of time interval for frequency of data
-time_interval = tab3.selectbox(
-    'Select Data Interval:',
-    ['1d', '1wk', '1mo'])
+stocks = ('AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME')
+selected_stock = tab3.selectbox('Select dataset for prediction', stocks)
 
-# Selection of technical indicators to visualize
-technical_indicator =tab3.selectbox(
-    'Select Technical Indicator:',
-    ['Open-Close', 'High-Low', 'Stock Volume'])
+n_years = tab3.slider('Years of prediction:', 1, 4)
+period = n_years * 365
 
-# Download stock data from Yahoo Finance
-@st.cache_data
-def load_data(ticker, period, interval):
-    return yf.download(ticker, period=period, interval=interval).reset_index()
+@st.cache
+def load_data(ticker):
+    data = yf.download(ticker, START, TODAY)
+    data.reset_index(inplace=True)
+    return data
 
-data = load_data(selected_ticker, time_period, time_interval)
-# Function to plot raw data using Plotly
-def plot_raw_data(data):
-    fig = go.Figure()
-    
-    if technical_indicator == 'Open-Close':
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], mode='lines', name="Stock Open"))
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], mode='lines', name="Stock Close"))
-        fig.layout.update(title_text=f'{selected_ticker} - Open vs Close', xaxis_rangeslider_visible=True)
-    
-    elif technical_indicator == 'High-Low':
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['High'], mode='lines', name="Stock High"))
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['Low'], mode='lines', name="Stock Low"))
-        fig.layout.update(title_text=f'{selected_ticker} - High vs Low', xaxis_rangeslider_visible=True)
-    
-    elif technical_indicator == 'Stock Volume':
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['Volume'], mode='lines', name="Stock Volume"))
-        fig.layout.update(title_text=f'{selected_ticker} - Stock Volume', xaxis_rangeslider_visible=True)
-    
-    st.plotly_chart(fig)
+data = load_data(selected_stock)
 
-plot_raw_data(data)
+tab3.subheader('Raw data')
+tab3.write(data.tail())
 
+# Plot raw data
+def plot_raw_data():
+	fig = go.Figure()
+	fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
+	fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
+	fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
+	st.plotly_chart(fig)
+	
+plot_raw_data()
