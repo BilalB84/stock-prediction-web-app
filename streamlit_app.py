@@ -287,63 +287,53 @@ from datetime import date
 tab3.subheader("StockSense AI: Interactive Stock Dashboard")
 tab3.markdown("Analyze real-time stock data.")
 
-# Define stock tickers and user inputs
-tickers = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
-selected_ticker = tab3.selectbox("Select Stock Ticker:", tickers)
-time_period = tab3.selectbox("Select Time Period:", ['1d', '1wk', '1mo', '6mo', '1y', '5y'])
-chart_type = tab3.selectbox("Select Chart Type:", ['Line Chart', 'Candlestick Chart'])
-technical_indicator = tab3.selectbox("Select Technical Indicator:", ['Open-Close', 'Volume', 'High-Low'])
-
-# Fetch Data
-def fetch_data(ticker, period):
-    """Fetch stock data from Yahoo Finance."""
-    try:
-        data = yf.download(ticker, period=period)
-        if data.empty:
-            raise ValueError("No data available for the selected inputs.")
-        data.reset_index(inplace=True)  # Reset index to use 'Date' column
-        return data
-    except Exception as e:
-        st.error(f"Error fetching data: {e}")
-        return None
-
-# 1. Fetch and Show Data
-data = fetch_data(selected_ticker, time_period)
-if data is not None:
-    st.subheader(f"Stock Data for {selected_ticker}")
-    st.write(data.tail())
-
-    # 2. Plot the Graphs
-    def plot_line_chart(data):
-        """Plot a line chart."""
-        fig = go.Figure()
-        if technical_indicator == 'Open-Close':
-            fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name='Open', mode='lines'))
-            fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name='Close', mode='lines'))
-        elif technical_indicator == 'High-Low':
-            fig.add_trace(go.Scatter(x=data['Date'], y=data['High'], name='High', mode='lines'))
-            fig.add_trace(go.Scatter(x=data['Date'], y=data['Low'], name='Low', mode='lines'))
-        elif technical_indicator == 'Volume':
-            fig.add_trace(go.Bar(x=data['Date'], y=data['Volume'], name='Volume'))
-        return fig
-
-    def plot_candlestick_chart(data):
-        """Plot a candlestick chart."""
-        fig = go.Figure(data=[go.Candlestick(
-            x=data['Date'],
-            open=data['Open'],
-            high=data['High'],
-            low=data['Low'],
-            close=data['Close']
-        )])
-        return fig
-
-    # 3. Show the Graphs
-    st.subheader(f"{chart_type} for {selected_ticker}")
-    if chart_type == 'Line Chart':
-        chart = plot_line_chart(data)
-    elif chart_type == 'Candlestick Chart':
-        chart = plot_candlestick_chart(data)
-    st.plotly_chart(chart, use_container_width=True)
 
 
+# Fetch and process data
+def load_data(ticker, start_date):
+    # Download stock data
+    stock_data = yf.download(ticker, start=start_date)
+    
+    # Flatten multi-index columns if present
+    if isinstance(stock_data.columns, pd.MultiIndex):
+        stock_data.columns = stock_data.columns.get_level_values(0)  # Keep only the first level
+    stock_data.reset_index(inplace=True)  # Ensure 'Date' is a column
+    
+    return stock_data
+
+# Plot line chart
+def plot_line_chart(data, x_col, y_cols, title):
+    fig = go.Figure()
+    for col in y_cols:
+        fig.add_trace(go.Scatter(x=data[x_col], y=data[col], mode='lines', name=col))
+    fig.update_layout(
+        title=title,
+        xaxis_title=x_col,
+        yaxis_title="Value",
+        template="plotly_white")
+    return fig
+
+
+# Inputs
+START_DATE = "2015-01-01"
+ticker_list = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
+selected_stock = tab3.selectbox('Select stock:', ticker_list)
+
+technical_indicator = tab3.selectbox(
+    'Select Technical Indicator:',
+    ['Open-Close', 'High-Low', 'Stock Volume'])
+
+# Fetch data
+data = load_data(selected_stock, START_DATE)
+st.write("Raw Data:")
+st.write(data.tail())
+
+# Display selected chart
+if technical_indicator == 'Open-Close':
+    fig = plot_line_chart(data, 'Date', ['Open', 'Close'], f"Open-Close for {selected_stock}")
+elif technical_indicator == 'High-Low':
+    fig = plot_line_chart(data, 'Date', ['High', 'Low'], f"High-Low for {selected_stock}")
+elif technical_indicator == 'Stock Volume':
+    fig = plot_line_chart(data, 'Date', ['Volume'], f"Stock Volume for {selected_stock}")
+
+st.plotly_chart(fig)
