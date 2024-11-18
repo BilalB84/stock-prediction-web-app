@@ -19,7 +19,6 @@ model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compil
 google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
 # Page Layout
-st.set_page_config(layout="wide")
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
 with tab1: 
