@@ -298,7 +298,7 @@ technical_indicator = tab3.selectbox(
     ['Open-Close', 'High-Low', 'Stock Volume'])
 
 # "Generate Dashboard" Button
-generate_dashboard = tab3..button('Generate Dashboard')
+generate_dashboard = tab3.button('Generate Dashboard')
 
 # Download stock data from Yahoo Finance
 @st.cache_data
