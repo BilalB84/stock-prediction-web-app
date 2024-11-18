@@ -269,9 +269,11 @@ with tab2.col3:
     with st.popover("Model Performance"):
         st.image("./images/variable-table.png")
 
-dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><strong>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</strong>"""
-tab2.markdown(dedication, unsafe_allow_html=True)
-tab2.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
+dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
+with tab2.container(border = True):
+    st.markdown(dedication, unsafe_allow_html=True)
+    st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
+
 tab2.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
 
 
@@ -288,7 +290,7 @@ START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
 
-ticker_list  = ('AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME')
+ticker_list  = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
 selected_stock = tab3.selectbox('Select dataset for prediction', ticker_list)
 
 time_interval = tab3.selectbox(
