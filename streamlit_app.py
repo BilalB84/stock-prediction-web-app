@@ -285,28 +285,29 @@ from datetime import timedelta
 tab3.subheader("StockSense AI: Interactive Stock Dashboard")
 tab3.markdown("Analyze real-time stock data.")
 
-# Input features
+# Selection of stock ticker
 ticker_list = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
 selected_ticker = tab3.selectbox('Select Stock Ticker:', ticker_list)
 
-time_interval = tab3.selectbox(
-    'Select Time Interval:',
-    ['1d', '1wk', '1mo', '1y'])
+# Selection of time period for how much history to retrieve
+time_period = tab3.selectbox(
+    'Select Time Period:',
+    ['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'])
 
-technical_indicator = tab3.selectbox(
+# Selection of time interval for frequency of data
+time_interval = tab3.selectbox(
+    'Select Data Interval:',
+    ['1d', '1wk', '1mo'])
+
+# Selection of technical indicators to visualize
+technical_indicator =tab3.selectbox(
     'Select Technical Indicator:',
     ['Open-Close', 'High-Low', 'Stock Volume'])
 
-# "Generate Dashboard" Button
-generate_dashboard = tab3.button('Generate Dashboard')
-
 # Download stock data from Yahoo Finance
 @st.cache_data
-def load_data(ticker, period):
-    stock_data = yf.download(ticker, period=period)
-    stock_data.reset_index(inplace=True)  # Reset index to have Date as a column
-    return stock_data
-
+def load_data(ticker, period, interval):
+    return yf.download(ticker, period=period, interval=interval).reset_index()
 
 # Function to plot raw data using Plotly
 def plot_raw_data(data):
@@ -328,13 +329,13 @@ def plot_raw_data(data):
     
     st.plotly_chart(fig)
 
+# Loading indicator while data is being fetched
+with tab3.spinner('Fetching data...'):
+    data = load_data(selected_ticker, time_period, time_interval)
+    
+# Check if data is empty before plotting
+if data.empty:
+    st.warning('No data available for the selected period and interval. Please try different options.')
+else:
+    tab3.plot_raw_data(data)
 
-# Display the chart only when the button is clicked
-if tab3.generate_dashboard:
-    data = load_data(selected_ticker, time_interval)
-    plot_raw_data(data)
-
-# Footer
-tab3.markdown("---")
-tab3.markdown(':rainbow[Project developed by] :blue-background[Sevilay Munire Girgin]')
-tab3.warning("This dashboard is for research purposes only and does not provide investment advice.", icon="❗")
