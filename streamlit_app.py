@@ -299,7 +299,7 @@ technical_indicator = tab3.selectbox(
 @st.cache_data
 def load_data(ticker):
     stock_data = yf.download(ticker, START, TODAY)
-    stock_data.set_index('Date', inplace=True)
+    stock_data.reset_index(inplace=True)
     return stock_data
 
 data = load_data(selected_stock)
