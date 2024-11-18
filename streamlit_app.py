@@ -17,6 +17,8 @@ class CustomLSTM(LSTM):
 model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
+# Page Layout
+st.set_page_config(layout="wide")
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
 tab1.header('🔮 StockSense AI Web Application')
@@ -276,12 +278,24 @@ from datetime import timedelta
 import pytz
 import ta
 
+
 # Tab 3 Content: Stock Dashboard
 tab3.markdown("## Interactive Stock Dashboard")
 tab3.markdown("Select a stock ticker, time period, chart type, and technical indicators to explore real-time stock data.")
 
+# Stock Options for Selectbox
+stocks = {
+    "Apple": "AAPL",
+    "Google": "GOOGL",
+    "Nvidia": "NVDA",
+    "Tesla": "TSLA",
+    "Microsoft": "MSFT",
+    "Gamestop": "GME"
+}
+
 # Input Fields for User Interaction
-ticker = tab3.text_input("Stock Ticker", value="AAPL", help="Enter the stock ticker symbol (e.g., AAPL, GOOGL).")
+ticker_name = tab3.selectbox("Choose Stock", options=list(stocks.keys()), index=0, help="Select a stock to view its data.")
+ticker = stocks[ticker_name]
 time_period = tab3.selectbox("Time Period", ["1d", "1wk", "1mo", "6mo", "1y", "max"], help="Choose the time period for the stock data.")
 chart_type = tab3.selectbox("Chart Type", ["Candlestick", "Line"], help="Choose how the stock price data will be visualized.")
 indicators = tab3.multiselect("Technical Indicators", ["SMA 20", "EMA 20"], help="Select technical indicators to overlay on the chart.")
@@ -317,6 +331,11 @@ if tab3.button("Generate Dashboard"):
                 data['SMA_20'] = ta.trend.sma_indicator(data['Close'], window=20)
                 data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
 
+                # Ensure all columns are 1D
+                data['SMA_20'] = data['SMA_20'].astype(float)
+                data['EMA_20'] = data['EMA_20'].astype(float)
+                data['Close'] = data['Close'].astype(float)
+
                 # Stock Overview Metrics
                 last_close = data['Close'].iloc[-1]
                 prev_close = data['Close'].iloc[0]
@@ -348,7 +367,7 @@ if tab3.button("Generate Dashboard"):
 
                 # Update Chart Layout
                 fig.update_layout(
-                    title=f"{ticker} Stock Price",
+                    title=f"{ticker_name} Stock Price",
                     xaxis_title="Time",
                     yaxis_title="Price (USD)",
                     height=600
@@ -368,4 +387,3 @@ if tab3.button("Generate Dashboard"):
 tab3.markdown("---")
 tab3.markdown(':rainbow[Project developed by] :blue-background[Sevilay Munire Girgin]')
 tab3.warning("This dashboard is for research purposes only and does not provide investment advice.", icon="❗")
-
