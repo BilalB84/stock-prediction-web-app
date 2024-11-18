@@ -278,8 +278,7 @@ tab2.warning('This work is not investment advice! It is merely a data science re
 
 #--------TAB3----------
 import plotly.graph_objects as go
-from datetime import timedelta
-
+from datetime import date
 
 # Tab 3 Content: Stock Dashboard
 tab3.subheader("StockSense AI: Interactive Stock Dashboard")
