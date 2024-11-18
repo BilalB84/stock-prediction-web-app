@@ -282,129 +282,57 @@ from datetime import timedelta
 
 
 # Tab 3 Content: Stock Dashboard
-tab3.markdown("## Interactive Stock Dashboard")
-tab3.markdown("Analyze real-time stock data with technical indicators.")
+tab3.subheader("StockSense AI: Interactive Stock Dashboard")
+tab3.markdown("Analyze real-time stock data.")
 
-# Stock Options for Selectbox
-stocks = {
-    "Apple": "AAPL",
-    "Google": "GOOGL",
-    "Nvidia": "NVDA",
-    "Tesla": "TSLA",
-    "Microsoft": "MSFT",
-    "Gamestop": "GME"
-}
+# Input features
+ticker_list = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
+selected_ticker = tab3.selectbox('Select Stock Ticker:', ticker_list)
 
-# Input Fields for User Interaction
-ticker_name = tab3.selectbox("Choose Stock", options=list(stocks.keys()), index=0, help="Select a stock to view its data.")
-ticker = stocks[ticker_name]
-time_period = tab3.selectbox("Time Period", ["1d", "1wk", "1mo", "6mo", "1y", "max"], help="Choose the time period for the stock data.")
-chart_type = tab3.selectbox("Chart Type", ["Candlestick", "Line"], help="Choose how the stock price data will be visualized.")
-indicators = tab3.multiselect("Technical Indicators", ["Open-Close", "Dollar Volume", "OBV", "SMA (3)", "SMA (5)", "SMA (15)"], help="Select indicators to visualize.")
+time_interval = tab3.selectbox(
+    'Select Time Interval:',
+    ['1d', '1wk', '1mo', '1y'])
 
-# Fetch and Display Stock Data
-if tab3.button("Generate Dashboard"):
-    with st.spinner("Fetching stock data..."):
-        # Map time periods to intervals
-        interval_mapping = {
-            '1d': '1m',
-            '1wk': '30m',
-            '1mo': '1d',
-            '6mo': '1d',
-            '1y': '1wk',
-            'max': '1wk'
-        }
+technical_indicator = tab3.selectbox(
+    'Select Technical Indicator:',
+    ['Open-Close', 'High-Low', 'Stock Volume'])
 
-        # Fetch data from Yahoo Finance
-        try:
-            # Fetch data
-            data = yf.download(ticker, period=time_period, interval=interval_mapping[time_period])
+# "Generate Dashboard" Button
+generate_dashboard = tab3..button('Generate Dashboard')
 
-            # Reset index to avoid mismatches in data length
-            data.reset_index(inplace=True)
+# Download stock data from Yahoo Finance
+@st.cache_data
+def load_data(ticker, period):
+    stock_data = yf.download(ticker, period=period)
+    stock_data.reset_index(inplace=True)  # Reset index to have Date as a column
+    return stock_data
 
-            # Verify data is not empty
-            if data.empty:
-                tab3.error(f"No data found for the ticker '{ticker}' and selected time period.")
-            else:
-                # Ensure columns are clean for processing
-                data = data.dropna()
 
-                # Calculate Technical Indicators
-                data['Dollar Volume'] = data['Close'] * data['Volume']
+# Function to plot raw data using Plotly
+def plot_raw_data():
+    fig = go.Figure()
+    
+    if technical_indicator == 'Open-Close':
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], mode='lines', name="Stock Open"))
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], mode='lines', name="Stock Close"))
+        fig.layout.update(title_text=f'{selected_ticker} - Open vs Close', xaxis_rangeslider_visible=True)
+    
+    elif technical_indicator == 'High-Low':
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['High'], mode='lines', name="Stock High"))
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Low'], mode='lines', name="Stock Low"))
+        fig.layout.update(title_text=f'{selected_ticker} - High vs Low', xaxis_rangeslider_visible=True)
+    
+    elif technical_indicator == 'Stock Volume':
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Volume'], mode='lines', name="Stock Volume"))
+        fig.layout.update(title_text=f'{selected_ticker} - Stock Volume', xaxis_rangeslider_visible=True)
+    
+    st.plotly_chart(fig)
 
-                # Calculate OBV
-                obv = [0]  # Initialize OBV
-                for i in range(1, len(data)):
-                    if data['Close'].iloc[i] > data['Close'].iloc[i - 1]:
-                        obv.append(obv[-1] + data['Volume'].iloc[i])
-                    elif data['Close'].iloc[i] < data['Close'].iloc[i - 1]:
-                        obv.append(obv[-1] - data['Volume'].iloc[i])
-                    else:
-                        obv.append(obv[-1])
-                data['OBV'] = obv
 
-                # Calculate SMAs
-                data['SMA_3'] = data['Close'].rolling(window=3).mean()
-                data['SMA_5'] = data['Close'].rolling(window=5).mean()
-                data['SMA_15'] = data['Close'].rolling(window=15).mean()
-
-                # Display Stock Metrics
-                last_close = data['Close'].iloc[-1]
-                prev_close = data['Close'].iloc[0]
-                change = last_close - prev_close
-                pct_change = (change / prev_close) * 100
-
-                tab3.metric("Last Price", f"${last_close:.2f}", delta=f"{change:.2f} ({pct_change:.2f}%)")
-
-                # Plotly Chart
-                fig = go.Figure()
-
-                # Add Open-Close Graph
-                if "Open-Close" in indicators:
-                    fig.add_trace(go.Scatter(
-                        x=data['Datetime'], y=data['Open'], mode='lines', name="Open Price", line=dict(color='blue')))
-                    fig.add_trace(go.Scatter(
-                        x=data['Datetime'], y=data['Close'], mode='lines', name="Close Price", line=dict(color='green')))
-
-                # Add Dollar Volume Graph
-                if "Dollar Volume" in indicators:
-                    fig.add_trace(go.Scatter(
-                        x=data['Datetime'], y=data['Dollar Volume'], mode='lines', name="Dollar Volume", line=dict(color='purple')))
-
-                # Add OBV Graph
-                if "OBV" in indicators:
-                    fig.add_trace(go.Scatter(
-                        x=data['Datetime'], y=data['OBV'], mode='lines', name="OBV", line=dict(color='orange')))
-
-                # Add SMA Graphs
-                if "SMA (3)" in indicators:
-                    fig.add_trace(go.Scatter(
-                        x=data['Datetime'], y=data['SMA_3'], name="SMA (3)", line=dict(color='red', dash='dot')))
-                if "SMA (5)" in indicators:
-                    fig.add_trace(go.Scatter(
-                        x=data['Datetime'], y=data['SMA_5'], name="SMA (5)", line=dict(color='green', dash='dot')))
-                if "SMA (15)" in indicators:
-                    fig.add_trace(go.Scatter(
-                        x=data['Datetime'], y=data['SMA_15'], name="SMA (15)", line=dict(color='blue', dash='dot')))
-
-                # Update Chart Layout
-                fig.update_layout(
-                    title=f"{ticker_name} Stock Price and Indicators",
-                    xaxis_title="Time",
-                    yaxis_title="Price / Volume (USD)",
-                    height=600
-                )
-
-                # Display Chart
-                tab3.plotly_chart(fig, use_container_width=True)
-
-                # Historical Data Table
-                tab3.markdown("### Historical Data")
-                tab3.dataframe(data[["Datetime", "Open", "High", "Low", "Close", "Volume", "Dollar Volume"]])
-
-        except Exception as e:
-            tab3.error(f"An error occurred: {str(e)}")
+# Display the chart only when the button is clicked
+if tab3.generate_dashboard:
+    data = load_data(selected_ticker, time_interval)
+    plot_raw_data(data)
 
 # Footer
 tab3.markdown("---")
