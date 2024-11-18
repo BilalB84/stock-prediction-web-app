@@ -158,11 +158,15 @@ with tab1.col3:
     with st.popover("Model Evaluation"):
         st.image("./images/variable-table.png")
 
-tab1.markdown("---")
-tab1.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
+
+dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
+with tab2.container(border = True):
+    st.markdown(dedication, unsafe_allow_html=True)
+    st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
+
 tab1.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
 
-#-----------------------
+#-----------------------TAB2---------------
 tab2.header('🔮 StockSense AI Web Application')
 tab2.info('StockSense AI uses real-time stock values via Yahoo Finance.')
 tab2.write(' ')
@@ -270,14 +274,11 @@ with tab2.col3:
     with st.popover("Model Performance"):
         st.image("./images/variable-table.png")
 
-dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
 with tab2.container(border = True):
     st.markdown(dedication, unsafe_allow_html=True)
     st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 
 tab2.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
-
-
 
 #--------TAB3----------
 import plotly.graph_objects as go
@@ -285,21 +286,47 @@ from datetime import date
 
 # Tab 3 Content: Stock Dashboard
 tab3.subheader("StockSense AI: Interactive Stock Dashboard")
-tab3.markdown("Analyze real-time stock data.")
+tab3.markdown(''':blue-background[Analyze real-time stock data]''')
 
 
+import streamlit as st
+import yfinance as yf
+from datetime import date
+import pandas as pd
+import plotly.graph_objects as go
 
 # Fetch and process data
 def load_data(ticker, start_date):
-    # Download stock data
     stock_data = yf.download(ticker, start=start_date)
-    
-    # Flatten multi-index columns if present
     if isinstance(stock_data.columns, pd.MultiIndex):
-        stock_data.columns = stock_data.columns.get_level_values(0)  # Keep only the first level
-    stock_data.reset_index(inplace=True)  # Ensure 'Date' is a column
-    
+        stock_data.columns = stock_data.columns.get_level_values(0)
+    stock_data.reset_index(inplace=True)
     return stock_data
+
+# Technical Indicators
+def calculate_indicators(data):
+    # On-Balance Volume (OBV)
+    data['OBV'] = (data['Volume'] * ((data['Close'] > data['Close'].shift(1)) * 2 - 1)).cumsum()
+
+    # Moving Averages
+    data['SMA_50'] = data['Close'].rolling(window=50).mean()  # 50-day Simple Moving Average
+    data['SMA_200'] = data['Close'].rolling(window=200).mean()  # 200-day SMA
+    data['EMA_50'] = data['Close'].ewm(span=50, adjust=False).mean()  # 50-day Exponential Moving Average
+    data['EMA_200'] = data['Close'].ewm(span=200, adjust=False).mean()  # 200-day EMA
+
+    # Relative Strength Index (RSI)
+    delta = data['Close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    data['RSI'] = 100 - (100 / (1 + rs))
+
+    # Bollinger Bands
+    data['BB_Mid'] = data['Close'].rolling(window=20).mean()
+    data['BB_Upper'] = data['BB_Mid'] + (data['Close'].rolling(window=20).std() * 2)
+    data['BB_Lower'] = data['BB_Mid'] - (data['Close'].rolling(window=20).std())
+
+    return data
 
 # Plot line chart
 def plot_line_chart(data, x_col, y_cols, title):
@@ -310,21 +337,34 @@ def plot_line_chart(data, x_col, y_cols, title):
         title=title,
         xaxis_title=x_col,
         yaxis_title="Value",
-        template="plotly_white")
+        template="plotly_white"
+    )
     return fig
 
+# Streamlit App
+st.title("StockSense AI: Enhanced Stock Dashboard")
 
 # Inputs
 START_DATE = "2015-01-01"
-ticker_list = ['AAPL', 'GOOGL', 'NVDA', 'TSLA', 'MSFT', 'GME']
-selected_stock = tab3.selectbox('Select stock:', ticker_list)
+ticker_list = ['AAPL', 'AMZN', 'AMD', 'GOOGL', 'INTC', 'META', 'MSFT', 'NVDA', 'TSLA']
+selected_stock = st.selectbox('Select stock:', ticker_list)
 
-technical_indicator = tab3.selectbox(
+technical_indicator = st.selectbox(
     'Select Technical Indicator:',
-    ['Open-Close', 'High-Low', 'Stock Volume'])
+    [
+        'Open-Close', 
+        'High-Low', 
+        'Stock Volume', 
+        'OBV (On-Balance Volume)', 
+        'SMA/EMA', 
+        'RSI (Relative Strength Index)', 
+        'Bollinger Bands'
+    ])
 
 # Fetch data
 data = load_data(selected_stock, START_DATE)
+data = calculate_indicators(data)
+
 st.write("Raw Data:")
 st.write(data.tail())
 
@@ -335,5 +375,13 @@ elif technical_indicator == 'High-Low':
     fig = plot_line_chart(data, 'Date', ['High', 'Low'], f"High-Low for {selected_stock}")
 elif technical_indicator == 'Stock Volume':
     fig = plot_line_chart(data, 'Date', ['Volume'], f"Stock Volume for {selected_stock}")
+elif technical_indicator == 'OBV (On-Balance Volume)':
+    fig = plot_line_chart(data, 'Date', ['OBV'], f"OBV for {selected_stock}")
+elif technical_indicator == 'SMA/EMA':
+    fig = plot_line_chart(data, 'Date', ['Close', 'SMA_50', 'SMA_200', 'EMA_50', 'EMA_200'], f"SMA/EMA for {selected_stock}")
+elif technical_indicator == 'RSI (Relative Strength Index)':
+    fig = plot_line_chart(data, 'Date', ['RSI'], f"RSI for {selected_stock}")
+elif technical_indicator == 'Bollinger Bands':
+    fig = plot_line_chart(data, 'Date', ['Close', 'BB_Mid', 'BB_Upper', 'BB_Lower'], f"Bollinger Bands for {selected_stock}")
 
 st.plotly_chart(fig)
