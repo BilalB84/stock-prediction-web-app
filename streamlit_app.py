@@ -330,5 +330,5 @@ def plot_raw_data(data):
     
     st.plotly_chart(fig)
 
-tab3.plot_raw_data(data)
+plot_raw_data(data)
 
