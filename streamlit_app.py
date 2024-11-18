@@ -290,25 +290,25 @@ with tab3:
     st.markdown(''':blue-background[Analyze real-time stock data]''')
 
 obv_text = '''Tracks the flow of volume to predict price changes.  
-Purpose: Identifies buying/selling pressure based on volume. A rising OBV suggests accumulation (buying), while a falling OBV suggests distribution (selling).
+Purpose: Identifies buying/selling pressure based on volume. A rising OBV suggests accumulation (buying), while a falling OBV suggests distribution (selling).  
 Use Case: Combine with price trends to confirm breakout patterns or reversals.'''
 
-ma_text = '''Moving averages smooth out price data to identify trends over a period.
-Simple Moving Average (SMA): Average of closing prices over a fixed period.
-Exponential Moving Average (EMA): Similar to SMA but gives more weight to recent prices for faster responsiveness.
-Purpose: SMA -- Tracks long-term trends (e.g., 50-day and 200-day SMA).
-EMA -- Tracks short-term momentum (e.g., 12-day and 26-day EMA). 
-Use Case: Bullish signal -- Short-term MA crosses above long-term MA ("Golden Cross").
+ma_text = '''Moving averages smooth out price data to identify trends over a period.  
+Simple Moving Average (SMA): Average of closing prices over a fixed period.   
+Exponential Moving Average (EMA): Similar to SMA but gives more weight to recent prices for faster responsiveness.  
+Purpose: SMA -- Tracks long-term trends (e.g., 50-day and 200-day SMA).   
+EMA -- Tracks short-term momentum (e.g., 12-day and 26-day EMA).    
+Use Case: Bullish signal -- Short-term MA crosses above long-term MA ("Golden Cross").  
 Bearish signal -- Short-term MA crosses below long-term MA ("Death Cross").'''
 
-rsi_text = '''RSI measures price momentum to identify overbought/oversold conditions.
-Compares average gains and losses over 14 days to generate a score between 0-100.
-RSI > 70: Overbought (may signal a sell opportunity).
-RSI < 30: Oversold (may signal a buy opportunity).
-Purpose: Indicates potential reversals or continuation in price trends.
+rsi_text = '''RSI measures price momentum to identify overbought/oversold conditions.  
+Compares average gains and losses over 14 days to generate a score between 0-100.  
+RSI > 70: Overbought (may signal a sell opportunity).  
+RSI < 30: Oversold (may signal a buy opportunity).   
+Purpose: Indicates potential reversals or continuation in price trends.  
 Use Case: Combine with other indicators to confirm breakout or correction signals.'''
 
-tab3.col1, tab3.col2, tab3.col3 = tab2.columns(3)
+tab3.col1, tab3.col2, tab3.col3 = tab3.columns(3)
 with tab3.col1:
     with st.popover("On-Balance Volume(OBV)"):
         st.markdown(obv_text)
