@@ -309,6 +309,7 @@ technical_indicator =tab3.selectbox(
 def load_data(ticker, period, interval):
     return yf.download(ticker, period=period, interval=interval).reset_index()
 
+data = load_data(selected_ticker, time_interval)
 # Function to plot raw data using Plotly
 def plot_raw_data(data):
     fig = go.Figure()
@@ -329,13 +330,5 @@ def plot_raw_data(data):
     
     st.plotly_chart(fig)
 
-# Loading indicator while data is being fetched
-with st.spinner('Fetching data...'):
-    data = load_data(selected_ticker, time_period, time_interval)
-    
-# Check if data is empty before plotting
-if data.empty:
-    st.warning('No data available for the selected period and interval. Please try different options.')
-else:
-    tab3.plot_raw_data(data)
+tab3.plot_raw_data(data)
 
