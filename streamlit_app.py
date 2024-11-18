@@ -269,21 +269,21 @@ with tab2.col3:
     with st.popover("Model Performance"):
         st.image("./images/variable-table.png")
 
-tab2.markdown("---")
+dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><strong>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</strong>"""
+tab2.markdown(dedication, unsafe_allow_html=True)
 tab2.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 tab2.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
 
+
+
 #--------TAB3----------
-import plotly.express as px
 import plotly.graph_objects as go
 from datetime import timedelta
-import pytz
-import ta
 
 
 # Tab 3 Content: Stock Dashboard
 tab3.markdown("## Interactive Stock Dashboard")
-tab3.markdown("Select a stock ticker, time period, chart type, and technical indicators to explore real-time stock data.")
+tab3.markdown("Analyze real-time stock data with technical indicators.")
 
 # Stock Options for Selectbox
 stocks = {
@@ -300,7 +300,7 @@ ticker_name = tab3.selectbox("Choose Stock", options=list(stocks.keys()), index=
 ticker = stocks[ticker_name]
 time_period = tab3.selectbox("Time Period", ["1d", "1wk", "1mo", "6mo", "1y", "max"], help="Choose the time period for the stock data.")
 chart_type = tab3.selectbox("Chart Type", ["Candlestick", "Line"], help="Choose how the stock price data will be visualized.")
-indicators = tab3.multiselect("Technical Indicators", ["SMA 20", "EMA 20"], help="Select technical indicators to overlay on the chart.")
+indicators = tab3.multiselect("Technical Indicators", ["Open-Close", "Dollar Volume", "OBV", "SMA (3)", "SMA (5)", "SMA (15)"], help="Select indicators to visualize.")
 
 # Fetch and Display Stock Data
 if tab3.button("Generate Dashboard"):
@@ -330,14 +330,19 @@ if tab3.button("Generate Dashboard"):
             else:
                 # Preprocess data
                 data.reset_index(inplace=True)
-
+                
                 # Calculate Technical Indicators
-                sma20 = ta.trend.sma_indicator(data['Close'], window=20)
-                ema20 = ta.trend.ema_indicator(data['Close'], window=20)
+                data['Dollar Volume'] = data['Close'] * data['Volume']
 
-                # Flatten Indicators to Ensure 1D Arrays
-                data['SMA_20'] = sma20.to_numpy().squeeze()
-                data['EMA_20'] = ema20.to_numpy().squeeze()
+                # Calculate OBV
+                data['OBV'] = (data['Close'].diff() > 0).astype(int) - (data['Close'].diff() < 0).astype(int)
+                data['OBV'] = data['OBV'] * data['Volume']
+                data['OBV'] = data['OBV'].cumsum()
+
+                # Calculate SMAs
+                data['SMA_3'] = data['Close'].rolling(window=3).mean()
+                data['SMA_5'] = data['Close'].rolling(window=5).mean()
+                data['SMA_15'] = data['Close'].rolling(window=15).mean()
 
                 # Stock Overview Metrics
                 last_close = data['Close'].iloc[-1]
@@ -350,29 +355,40 @@ if tab3.button("Generate Dashboard"):
 
                 # Plotly Chart
                 fig = go.Figure()
-                if chart_type == "Candlestick":
-                    fig.add_trace(go.Candlestick(
-                        x=data['Datetime'],
-                        open=data['Open'],
-                        high=data['High'],
-                        low=data['Low'],
-                        close=data['Close'],
-                        name="Candlestick"))
-                else:
-                    fig.add_trace(go.Scatter(x=data['Datetime'], y=data['Close'], mode='lines', name="Close Price"))
 
-                # Add Technical Indicators
-                for indicator in indicators:
-                    if indicator == "SMA 20":
-                        fig.add_trace(go.Scatter(x=data['Datetime'], y=data['SMA_20'], name="SMA 20"))
-                    elif indicator == "EMA 20":
-                        fig.add_trace(go.Scatter(x=data['Datetime'], y=data['EMA_20'], name="EMA 20"))
+                # Add Open-Close Graph
+                if "Open-Close" in indicators:
+                    fig.add_trace(go.Scatter(
+                        x=data['Datetime'], y=data['Open'], mode='lines', name="Open Price", line=dict(color='blue')))
+                    fig.add_trace(go.Scatter(
+                        x=data['Datetime'], y=data['Close'], mode='lines', name="Close Price", line=dict(color='green')))
+
+                # Add Dollar Volume Graph
+                if "Dollar Volume" in indicators:
+                    fig.add_trace(go.Scatter(
+                        x=data['Datetime'], y=data['Dollar Volume'], mode='lines', name="Dollar Volume", line=dict(color='purple')))
+
+                # Add OBV Graph
+                if "OBV" in indicators:
+                    fig.add_trace(go.Scatter(
+                        x=data['Datetime'], y=data['OBV'], mode='lines', name="OBV", line=dict(color='orange')))
+
+                # Add SMA Graphs
+                if "SMA (3)" in indicators:
+                    fig.add_trace(go.Scatter(
+                        x=data['Datetime'], y=data['SMA_3'], name="SMA (3)", line=dict(color='red', dash='dot')))
+                if "SMA (5)" in indicators:
+                    fig.add_trace(go.Scatter(
+                        x=data['Datetime'], y=data['SMA_5'], name="SMA (5)", line=dict(color='green', dash='dot')))
+                if "SMA (15)" in indicators:
+                    fig.add_trace(go.Scatter(
+                        x=data['Datetime'], y=data['SMA_15'], name="SMA (15)", line=dict(color='blue', dash='dot')))
 
                 # Update Chart Layout
                 fig.update_layout(
-                    title=f"{ticker_name} Stock Price",
+                    title=f"{ticker_name} Stock Price and Indicators",
                     xaxis_title="Time",
-                    yaxis_title="Price (USD)",
+                    yaxis_title="Price / Volume (USD)",
                     height=600
                 )
 
@@ -381,7 +397,7 @@ if tab3.button("Generate Dashboard"):
 
                 # Historical Data Table
                 tab3.markdown("### Historical Data")
-                tab3.dataframe(data[["Datetime", "Open", "High", "Low", "Close", "Volume"]])
+                tab3.dataframe(data[["Datetime", "Open", "High", "Low", "Close", "Volume", "Dollar Volume"]])
 
         except Exception as e:
             tab3.error(f"An error occurred: {str(e)}")
@@ -390,4 +406,3 @@ if tab3.button("Generate Dashboard"):
 tab3.markdown("---")
 tab3.markdown(':rainbow[Project developed by] :blue-background[Sevilay Munire Girgin]')
 tab3.warning("This dashboard is for research purposes only and does not provide investment advice.", icon="❗")
-
