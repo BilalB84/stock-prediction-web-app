@@ -286,10 +286,41 @@ import plotly.graph_objects as go
 from datetime import date
 
 with tab3: 
-    st.header('🔮 StockSense AI Web Application')
     st.header('StockSense AI: Interactive Stock Dashboard')
     st.markdown(''':blue-background[Analyze real-time stock data]''')
- 
+
+obv_text = '''Tracks the flow of volume to predict price changes.  
+Purpose: Identifies buying/selling pressure based on volume. A rising OBV suggests accumulation (buying), while a falling OBV suggests distribution (selling).
+Use Case: Combine with price trends to confirm breakout patterns or reversals.'''
+
+ma_text = '''Moving averages smooth out price data to identify trends over a period.
+Simple Moving Average (SMA): Average of closing prices over a fixed period.
+Exponential Moving Average (EMA): Similar to SMA but gives more weight to recent prices for faster responsiveness.
+Purpose: SMA -- Tracks long-term trends (e.g., 50-day and 200-day SMA).
+EMA -- Tracks short-term momentum (e.g., 12-day and 26-day EMA). 
+Use Case: Bullish signal -- Short-term MA crosses above long-term MA ("Golden Cross").
+Bearish signal -- Short-term MA crosses below long-term MA ("Death Cross").'''
+
+rsi_text = '''RSI measures price momentum to identify overbought/oversold conditions.
+Compares average gains and losses over 14 days to generate a score between 0-100.
+RSI > 70: Overbought (may signal a sell opportunity).
+RSI < 30: Oversold (may signal a buy opportunity).
+Purpose: Indicates potential reversals or continuation in price trends.
+Use Case: Combine with other indicators to confirm breakout or correction signals.'''
+
+tab3.col1, tab3.col2, tab3.col3 = tab2.columns(3)
+with tab3.col1:
+    with st.popover("On-Balance Volume(OBV)"):
+        st.markdown(obv_text)
+
+with tab3.col2:
+    with st.popover("Moving Averages(SMA/EMA)"):
+        st.markdown(ma_text)
+      
+with tab3.col3:
+    with st.popover("Relative Strength Index(RSI)"):
+        st.markdown(rsi_text)
+
 # Fetch and process data
 def load_data(ticker, start_date):
     stock_data = yf.download(ticker, start=start_date)
@@ -343,27 +374,22 @@ selected_stock = tab3.selectbox('Select stock:', ticker_list)
 technical_indicator = tab3.selectbox(
     'Select Technical Indicator:',
     [
-        'Open-Close', 
-        'High-Low', 
+        'Open-High', 
+        'Low-Close', 
         'Stock Volume', 
         'OBV (On-Balance Volume)', 
         'SMA/EMA', 
-        'RSI (Relative Strength Index)', 
-        'Bollinger Bands'])
+        'RSI (Relative Strength Index)'])
 
 # Fetch data
 data = load_data(selected_stock, START_DATE)
 data = calculate_indicators(data)
 
-with tab3: 
-    st.write("Raw Data:")
-    st.write(data.tail())
-
 # Display selected chart
-if technical_indicator == 'Open-Close':
-    fig = plot_line_chart(data, 'Date', ['Open', 'Close'], f"Open-Close for {selected_stock}")
-elif technical_indicator == 'High-Low':
-    fig = plot_line_chart(data, 'Date', ['High', 'Low'], f"High-Low for {selected_stock}")
+if technical_indicator == 'Open-High':
+    fig = plot_line_chart(data, 'Date', ['Open', 'High'], f"Opening versus Highest Prices for {selected_stock}")
+elif technical_indicator == 'Low-Close':
+    fig = plot_line_chart(data, 'Date', ['Low', 'Close'], f"Lowest versus Closing Prices for {selected_stock}")
 elif technical_indicator == 'Stock Volume':
     fig = plot_line_chart(data, 'Date', ['Volume'], f"Stock Volume for {selected_stock}")
 elif technical_indicator == 'OBV (On-Balance Volume)':
@@ -372,8 +398,6 @@ elif technical_indicator == 'SMA/EMA':
     fig = plot_line_chart(data, 'Date', ['Close', 'SMA_50', 'SMA_200', 'EMA_50', 'EMA_200'], f"SMA/EMA for {selected_stock}")
 elif technical_indicator == 'RSI (Relative Strength Index)':
     fig = plot_line_chart(data, 'Date', ['RSI'], f"RSI for {selected_stock}")
-elif technical_indicator == 'Bollinger Bands':
-    fig = plot_line_chart(data, 'Date', ['Close', 'BB_Mid', 'BB_Upper', 'BB_Lower'], f"Bollinger Bands for {selected_stock}")
 
 with tab3: 
     st.plotly_chart(fig)
