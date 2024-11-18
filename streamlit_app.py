@@ -22,10 +22,10 @@ google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": 
 st.set_page_config(layout="wide")
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
-tab1.header('🔮 StockSense AI Web Application')
-#info = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong><i>The AI uses real-time stock values via Yahoo Finance</i></strong></div>"""
-tab1.info('StockSense AI uses real-time stock values via Yahoo Finance.')
-tab1.write(' ')
+with tab1: 
+    st.header('🔮 StockSense AI Web Application')
+	st.info('StockSense AI uses real-time stock values via Yahoo Finance.')
+    st.write(' ')
 
 # Define function to get raw data
 def raw_data():
