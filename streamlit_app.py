@@ -330,7 +330,7 @@ def plot_raw_data(data):
     st.plotly_chart(fig)
 
 # Loading indicator while data is being fetched
-with tab3.spinner('Fetching data...'):
+with st.spinner('Fetching data...'):
     data = load_data(selected_ticker, time_period, time_interval)
     
 # Check if data is empty before plotting
