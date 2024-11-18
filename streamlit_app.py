@@ -276,122 +276,96 @@ from datetime import timedelta
 import pytz
 import ta
 
-# Fetch stock data based on the ticker, period, and interval
-def fetch_stock_data(ticker, period, interval):
-    end_date = datetime.now()
-    if period == '1wk':
-        start_date = end_date - timedelta(days=7)
-        data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
-    else:
-        data = yf.download(ticker, period=period, interval=interval)
-    return data
+# Tab 3 Content: Stock Dashboard
+tab3.markdown("## Interactive Stock Dashboard")
+tab3.markdown("Select a stock ticker, time period, chart type, and technical indicators to explore real-time stock data.")
 
-# Process data to ensure it is timezone-aware and has the correct format
-def process_data(data):
-    if data.index.tzinfo is None:
-        data.index = data.index.tz_localize('UTC')
-    data.index = data.index.tz_convert('US/Eastern')
-    data.reset_index(inplace=True)
-    data.rename(columns={'Date': 'Datetime'}, inplace=True)
-    return data
+# Input Fields for User Interaction
+ticker = tab3.text_input("Stock Ticker", value="AAPL", help="Enter the stock ticker symbol (e.g., AAPL, GOOGL).")
+time_period = tab3.selectbox("Time Period", ["1d", "1wk", "1mo", "6mo", "1y", "max"], help="Choose the time period for the stock data.")
+chart_type = tab3.selectbox("Chart Type", ["Candlestick", "Line"], help="Choose how the stock price data will be visualized.")
+indicators = tab3.multiselect("Technical Indicators", ["SMA 20", "EMA 20"], help="Select technical indicators to overlay on the chart.")
 
-# Calculate basic metrics from the stock data
-def calculate_metrics(data):
-    last_close = data['Close'].iloc[-1]
-    prev_close = data['Close'].iloc[0]
-    change = last_close - prev_close
-    pct_change = (change / prev_close) * 100
-    high = data['High'].max()
-    low = data['Low'].min()
-    volume = data['Volume'].sum()
-    return last_close, change, pct_change, high, low, volume
+# Fetch and Display Stock Data
+if tab3.button("Generate Dashboard"):
+    with st.spinner("Fetching stock data..."):
+        # Map time periods to intervals
+        interval_mapping = {
+            '1d': '1m',
+            '1wk': '30m',
+            '1mo': '1d',
+            '6mo': '1d',
+            '1y': '1wk',
+            'max': '1wk'
+        }
 
-# Add simple moving average (SMA) and exponential moving average (EMA) indicators
-def add_technical_indicators(data):
-    data['SMA_20'] = ta.trend.sma_indicator(data['Close'], window=20)
-    data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
-    return data
-
-with tab3:
-    st.subheader("StockSense AI: Real-Time Stock Dashboard")
-
-    # Input parameters
-    st.write("### Dashboard Settings")
-    ticker = st.text_input('Enter Stock Ticker', value='ADBE')
-    time_period = st.selectbox('Select Time Period', ['1d', '1wk', '1mo', '1y', 'max'])
-    chart_type = st.selectbox('Select Chart Type', ['Candlestick', 'Line'])
-    indicators = st.multiselect('Select Technical Indicators', ['SMA 20', 'EMA 20'])
-    update_button = st.button("Generate Dashboard")
-
-    # Mapping time periods to intervals
-    interval_mapping = {
-        '1d': '1m',
-        '1wk': '30m',
-        '1mo': '1d',
-        '1y': '1wk',
-        'max': '1wk'}
-
-    if update_button:
-        with st.spinner("Fetching and processing stock data..."):
-            # Fetch, process, and enhance data
-            data = fetch_stock_data(ticker, time_period, interval_mapping[time_period])
-            if data.empty:
-                st.error("No data found for the given ticker and time period.")
-                return
-                
-            data = process_data(data)
-            data = add_technical_indicators(data)
-
-            # Calculate metrics
-            last_close = data['Close'].iloc[-1]
-            prev_close = data['Close'].iloc[0]
-            change = last_close - prev_close
-            pct_change = (change / prev_close) * 100
-            high = data['High'].max()
-            low = data['Low'].min()
-            volume = data['Volume'].sum()
-
-            # Display metrics
-            st.write("### Stock Overview")
-            st.metric(label=f"{ticker} Last Price", value=f"{last_close:.2f} USD", delta=f"{change:.2f} ({pct_change:.2f}%)")
-                
-            col1, col2, col3 = st.columns(3)
-            col1.metric("High", f"{high:.2f} USD")
-            col2.metric("Low", f"{low:.2f} USD")
-            col3.metric("Volume", f"{volume:,}")
-
-            # Plot the stock price chart
-            fig = go.Figure()
-            if chart_type == 'Candlestick':
-                fig.add_trace(go.Candlestick(x=data['Datetime'],
-                                             open=data['Open'],
-                                             high=data['High'],
-                                             low=data['Low'],
-                                             close=data['Close']))
+        # Fetch data from Yahoo Finance
+        end_date = datetime.now()
+        try:
+            if time_period == '1wk':
+                start_date = end_date - timedelta(days=7)
+                data = yf.download(ticker, start=start_date, end=end_date, interval=interval_mapping[time_period])
             else:
-                fig = px.line(data, x='Datetime', y='Close', title=f"{ticker} {time_period.upper()} Chart")
+                data = yf.download(ticker, period=time_period, interval=interval_mapping[time_period])
 
-            # Add selected technical indicators
-            for indicator in indicators:
-                if indicator == 'SMA 20':
-                    fig.add_trace(go.Scatter(x=data['Datetime'], y=data['SMA_20'], name='SMA 20'))
-                elif indicator == 'EMA 20':
-                    fig.add_trace(go.Scatter(x=data['Datetime'], y=data['EMA_20'], name='EMA 20'))
+            # Check if data is empty
+            if data.empty:
+                tab3.error(f"No data found for the ticker '{ticker}' and selected time period.")
+            else:
+                # Preprocess data
+                data.reset_index(inplace=True)
+                data['SMA_20'] = ta.trend.sma_indicator(data['Close'], window=20)
+                data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
 
-            # Format the chart
-            fig.update_layout(xaxis_title='Time',
-                              yaxis_title='Price (USD)',
-                              height=600)
-            st.plotly_chart(fig, use_container_width=True)
+                # Stock Overview Metrics
+                last_close = data['Close'].iloc[-1]
+                prev_close = data['Close'].iloc[0]
+                change = last_close - prev_close
+                pct_change = (change / prev_close) * 100
 
-            # Display historical data and indicators
-            st.write("### Historical Data")
-            st.dataframe(data[['Datetime', 'Open', 'High', 'Low', 'Close', 'Volume']])
+                # Display Stock Metrics
+                tab3.metric("Last Price", f"${last_close:.2f}", delta=f"{change:.2f} ({pct_change:.2f}%)")
 
-            st.write("### Technical Indicators")
-            st.dataframe(data[['Datetime', 'SMA_20', 'EMA_20']])
-    
-    
-    
-    
-    
+                # Plotly Chart
+                fig = go.Figure()
+                if chart_type == "Candlestick":
+                    fig.add_trace(go.Candlestick(
+                        x=data['Datetime'],
+                        open=data['Open'],
+                        high=data['High'],
+                        low=data['Low'],
+                        close=data['Close'],
+                        name="Candlestick"))
+                else:
+                    fig.add_trace(go.Scatter(x=data['Datetime'], y=data['Close'], mode='lines', name="Close Price"))
+
+                # Add Technical Indicators
+                for indicator in indicators:
+                    if indicator == "SMA 20":
+                        fig.add_trace(go.Scatter(x=data['Datetime'], y=data['SMA_20'], name="SMA 20"))
+                    elif indicator == "EMA 20":
+                        fig.add_trace(go.Scatter(x=data['Datetime'], y=data['EMA_20'], name="EMA 20"))
+
+                # Update Chart Layout
+                fig.update_layout(
+                    title=f"{ticker} Stock Price",
+                    xaxis_title="Time",
+                    yaxis_title="Price (USD)",
+                    height=600
+                )
+
+                # Display Chart
+                tab3.plotly_chart(fig, use_container_width=True)
+
+                # Historical Data Table
+                tab3.markdown("### Historical Data")
+                tab3.dataframe(data[["Datetime", "Open", "High", "Low", "Close", "Volume"]])
+
+        except Exception as e:
+            tab3.error(f"An error occurred: {str(e)}")
+
+# Footer
+tab3.markdown("---")
+tab3.markdown(':rainbow[Project developed by] :blue-background[Sevilay Munire Girgin]')
+tab3.warning("This dashboard is for research purposes only and does not provide investment advice.", icon="❗")
+
