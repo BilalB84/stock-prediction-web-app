@@ -316,41 +316,45 @@ if tab3.button("Generate Dashboard"):
         }
 
         # Fetch data from Yahoo Finance
-        end_date = datetime.now()
         try:
-            if time_period == '1wk':
-                start_date = end_date - timedelta(days=7)
-                data = yf.download(ticker, start=start_date, end=end_date, interval=interval_mapping[time_period])
-            else:
-                data = yf.download(ticker, period=time_period, interval=interval_mapping[time_period])
+            # Fetch data
+            data = yf.download(ticker, period=time_period, interval=interval_mapping[time_period])
 
-            # Check if data is empty
+            # Reset index to avoid mismatches in data length
+            data.reset_index(inplace=True)
+
+            # Verify data is not empty
             if data.empty:
                 tab3.error(f"No data found for the ticker '{ticker}' and selected time period.")
             else:
-                # Preprocess data
-                data.reset_index(inplace=True)
-                
+                # Ensure columns are clean for processing
+                data = data.dropna()
+
                 # Calculate Technical Indicators
                 data['Dollar Volume'] = data['Close'] * data['Volume']
 
                 # Calculate OBV
-                data['OBV'] = (data['Close'].diff() > 0).astype(int) - (data['Close'].diff() < 0).astype(int)
-                data['OBV'] = data['OBV'] * data['Volume']
-                data['OBV'] = data['OBV'].cumsum()
+                obv = [0]  # Initialize OBV
+                for i in range(1, len(data)):
+                    if data['Close'].iloc[i] > data['Close'].iloc[i - 1]:
+                        obv.append(obv[-1] + data['Volume'].iloc[i])
+                    elif data['Close'].iloc[i] < data['Close'].iloc[i - 1]:
+                        obv.append(obv[-1] - data['Volume'].iloc[i])
+                    else:
+                        obv.append(obv[-1])
+                data['OBV'] = obv
 
                 # Calculate SMAs
                 data['SMA_3'] = data['Close'].rolling(window=3).mean()
                 data['SMA_5'] = data['Close'].rolling(window=5).mean()
                 data['SMA_15'] = data['Close'].rolling(window=15).mean()
 
-                # Stock Overview Metrics
+                # Display Stock Metrics
                 last_close = data['Close'].iloc[-1]
                 prev_close = data['Close'].iloc[0]
                 change = last_close - prev_close
                 pct_change = (change / prev_close) * 100
 
-                # Display Stock Metrics
                 tab3.metric("Last Price", f"${last_close:.2f}", delta=f"{change:.2f} ({pct_change:.2f}%)")
 
                 # Plotly Chart
