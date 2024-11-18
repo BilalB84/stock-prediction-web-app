@@ -332,12 +332,12 @@ if tab3.button("Generate Dashboard"):
                 data.reset_index(inplace=True)
 
                 # Calculate Technical Indicators
-                data['SMA_20'] = ta.trend.sma_indicator(data['Close'], window=20)
-                data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
+                sma20 = ta.trend.sma_indicator(data['Close'], window=20)
+                ema20 = ta.trend.ema_indicator(data['Close'], window=20)
 
                 # Flatten Indicators to Ensure 1D Arrays
-                data['SMA_20'] = data['SMA_20'].to_numpy().flatten()
-                data['EMA_20'] = data['EMA_20'].to_numpy().flatten()
+                data['SMA_20'] = sma20.to_numpy().squeeze()
+                data['EMA_20'] = ema20.to_numpy().squeeze()
 
                 # Stock Overview Metrics
                 last_close = data['Close'].iloc[-1]
@@ -391,9 +391,3 @@ tab3.markdown("---")
 tab3.markdown(':rainbow[Project developed by] :blue-background[Sevilay Munire Girgin]')
 tab3.warning("This dashboard is for research purposes only and does not provide investment advice.", icon="❗")
 
-
-
-# Footer
-tab3.markdown("---")
-tab3.markdown(':rainbow[Project developed by] :blue-background[Sevilay Munire Girgin]')
-tab3.warning("This dashboard is for research purposes only and does not provide investment advice.", icon="❗")
