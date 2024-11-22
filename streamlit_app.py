@@ -21,10 +21,13 @@ google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": 
 # Page Layout
 st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "🔮", layout = "wide")
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
+info_multi = '''Welcome to SafeStock AI! 🚀
+SafeStock AI is your go-to platform for exploring AI-powered stock forecasting and analysis using real-time stock values via Yahoo Finance. 
+Whether you're a data science enthusiast or a market observer, this app blends cutting-edge deep learning with intuitive tools to bring you actionable insights on major stocks like Apple and Google.'''
 
 with tab1: 
     st.header('SafeStock AI Web Application')
-    st.info('SafeStock AI uses real-time stock values via Yahoo Finance.')
+    st.info(info_multi)
     st.write(' ')
 
 # Define function to get raw data
@@ -164,7 +167,7 @@ with tab1.container(border = True):
     st.markdown(dedication, unsafe_allow_html=True)
     st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 
-tab1.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
+tab1.warning('Disclaimer: This project is for research and educational purposes only and is not intended for financial or investment advice.', icon="❗")
 
 #-----------------------TAB2---------------
 with tab2: 
@@ -279,7 +282,7 @@ with tab2.container(border = True):
     st.markdown(dedication, unsafe_allow_html=True)
     st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 
-tab2.warning('This work is not investment advice! It is merely a data science research.', icon="❗")
+tab2.warning('Disclaimer: This project is for research and educational purposes only and is not intended for financial or investment advice.', icon="❗")
 
 #--------TAB3----------
 import plotly.graph_objects as go
