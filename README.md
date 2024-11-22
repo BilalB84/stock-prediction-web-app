@@ -1,7 +1,7 @@
 # SafeStock AI Web Application 🔮
 ## Real-Time Stock Forecasting & Analysis Using LSTM Models 🤖
 SafeStock AI is a web-based application that combines real-time stock market data with AI-driven forecasting to provide actionable insights on stocks.   
-It leverages LSTM (Long Short-Term Memory) models for time-series forecasting, offering users predictions and technical analysis for better understanding market trends.
+It leverages LSTM (Long Short-Term Memory) models for time-series forecasting, offering users predictions and technical analysis for a better understanding of market trends.
 
 
 ## Demo App
@@ -61,6 +61,5 @@ Technical Indicators:
 
 ## Contact 📩
 For any questions or inquiries, feel free to reach out:
-- **Email:** sevilaymunire68@gmail.com
 - **LinkedIn:** [Sevilay Munire Girgin](www.linkedin.com/in/sevilay-munire-girgin-8902a7159)
 Thank you for visiting my project repository. Happy and accurate predicting! 💕
