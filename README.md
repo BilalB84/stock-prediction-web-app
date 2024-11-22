@@ -6,7 +6,8 @@ It leverages LSTM (Long Short-Term Memory) models for time-series forecasting, o
 
 ## Demo App
 
-[![Safe Stock Web App](https://safestock-ai.streamlit.app/)]
+[![SafeStock AI Web App](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://safestock-ai.streamlit.app/)
+
 
 ## Key Features
 📈 Real-Time Stock Prices: Stay updated with dynamic market data from Yahoo Finance.
