@@ -290,7 +290,7 @@ from datetime import date
 
 with tab3: 
     st.header('SafeStock AI: Interactive Stock Dashboard')
-    st.markdown(''':blue-background[Analyze real-time stock data]''')
+    st.markdown(''':blue-background[📈 Real-Time Stock Prices: Stay updated with dynamic market data fetched directly from Yahoo Finance.]''')
 
 obv_text = '''Tracks the flow of volume to predict price changes.  
 Purpose: Identifies buying/selling pressure based on volume. A rising OBV suggests accumulation (buying), while a falling OBV suggests distribution (selling).  
