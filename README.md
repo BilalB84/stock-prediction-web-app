@@ -10,9 +10,9 @@ It leverages LSTM (Long Short-Term Memory) models for time-series forecasting, o
 
 
 ## Key Features
-📈 Real-Time Stock Prices: Stay updated with dynamic market data from Yahoo Finance.
-🤖 AI Predictions: View the next 5-day stock price forecasts, powered by advanced LSTM models.
-📊 Technical Analysis: Explore trends with indicators like SMA, EMA, RSI, and OBV using interactive charts.
+📈 Real-Time Stock Prices: Stay updated with dynamic market data from Yahoo Finance.  
+🤖 AI Predictions: View the next 5-day stock price forecasts, powered by advanced LSTM models.  
+📊 Technical Analysis: Explore trends with indicators like SMA, EMA, RSI, and OBV using interactive charts.  
 📋 Performance Metrics: Dive into AI model accuracy with evaluation details and key variables.
 
 
