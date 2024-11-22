@@ -19,12 +19,12 @@ model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compil
 google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
 # Page Layout
-st.set_page_config(page_title ="StockSense AI Web Application",  page_icon = "🔮", layout = "wide")
+st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "🔮", layout = "wide")
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 
 with tab1: 
-    st.header('🔮 StockSense AI Web Application')
-    st.info('StockSense AI uses real-time stock values via Yahoo Finance.')
+    st.header('SafeStock AI Web Application')
+    st.info('SafeStock AI uses real-time stock values via Yahoo Finance.')
     st.write(' ')
 
 # Define function to get raw data
@@ -168,7 +168,7 @@ tab1.warning('This work is not investment advice! It is merely a data science re
 
 #-----------------------TAB2---------------
 with tab2: 
-    st.header('🔮 StockSense AI Web Application')
+    st.header('SafeStock AI Web Application')
     st.info('StockSense AI uses real-time stock values via Yahoo Finance.')
     st.write(' ')
 
@@ -286,7 +286,7 @@ import plotly.graph_objects as go
 from datetime import date
 
 with tab3: 
-    st.header('StockSense AI: Interactive Stock Dashboard')
+    st.header('SafeStock AI: Interactive Stock Dashboard')
     st.markdown(''':blue-background[Analyze real-time stock data]''')
 
 obv_text = '''Tracks the flow of volume to predict price changes.  
