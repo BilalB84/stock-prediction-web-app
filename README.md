@@ -30,6 +30,14 @@ The core of SafeStock AI is an LSTM neural network, specifically designed for se
 
 ## Model Features
 Input Variables: 
+    Garman-Klass Volatility
+    Dollar Volume
+    On Balance Volume (OBV)
+    Moving Average Convergence Divergence (MACD)
+    Moving Averages (MAs)
+
+
+
   Historical price data (Open, Close, Adjusted Close, High, Low, Volume)
   Garman-Klass Volatility
   Dollar Volume
