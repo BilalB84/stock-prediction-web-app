@@ -15,8 +15,8 @@ class CustomLSTM(LSTM):
         kwargs.pop("time_major", None)  # Remove unrecognized argument
         super().__init__(*args, **kwargs)
 
-model = load_model('./app_model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
-google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+model = load_model('./Apple_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+google_model = load_model('./Google_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
 # Page Layout
 st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "🔮", layout = "wide")
