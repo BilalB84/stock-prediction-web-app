@@ -6,7 +6,7 @@ It leverages LSTM (Long Short-Term Memory) models for time-series forecasting, o
 
 ## Demo App
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://app-starter-kit.streamlit.app/)
+[![Safe Stock Web App](https://safestock-ai.streamlit.app/)
 
 ## Key Features
 📈 Real-Time Stock Prices: Stay updated with dynamic market data from Yahoo Finance.
@@ -22,7 +22,10 @@ The app is powered by:
 - LSTM Model: A robust time-series forecasting algorithm trained to predict stock price movements.
 - Visualization: Interactive charts display historical trends, technical indicators, and model predictions.
 
-## Screenshots
+## Screenshots of Web App
+[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab1-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab1-ss.png)
+[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab2-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab2-ss.png)
+[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab3-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab3-ss.png)
 
 Models & Methodology
 Model Overview
