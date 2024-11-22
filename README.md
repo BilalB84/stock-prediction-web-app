@@ -30,33 +30,27 @@ The core of SafeStock AI is an LSTM neural network, specifically designed for se
 
 ## Model Features
 Input Variables: 
+    
     Garman-Klass Volatility
     Dollar Volume
     On Balance Volume (OBV)
     Moving Average Convergence Divergence (MACD)
     Moving Averages (MAs)
 
-
-
-  Historical price data (Open, Close, Adjusted Close, High, Low, Volume)
-  Garman-Klass Volatility
-  Dollar Volume
-  On Balance Volume (OBV)
-  MACD
-  3-Days Moving Average
-
 Evaluation Metrics:
+    
     RMSE (Root Mean Squared Error)
     MAE (Mean Absolute Error)
     R² (Coefficient of Determination)
 
 Technical Indicators:
-  SMA (Simple Moving Average): Tracks short-term trends.
-  EMA (Exponential Moving Average): Highlights momentum.
-  RSI (Relative Strength Index): Analyzes overbought/oversold conditions.
-  OBV (On-Balance Volume): Measures buying/selling pressure.
+  
+    SMA (Simple Moving Average): Tracks short-term trends.
+    EMA (Exponential Moving Average): Highlights momentum.
+    RSI (Relative Strength Index): Analyzes overbought/oversold conditions.
+    OBV (On-Balance Volume): Measures buying/selling pressure.
 
-Future Enhancements
+## Future Enhancements
 - Add support for more stocks and global markets.
 - Incorporate additional AI models like GRU and ARIMA for comparative analysis.
 - Deploy for scalability on cloud platforms (AWS, GCP, or Azure).
