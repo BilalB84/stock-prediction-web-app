@@ -6,7 +6,7 @@ It leverages LSTM (Long Short-Term Memory) models for time-series forecasting, o
 
 ## Demo App
 
-[![Safe Stock Web App](https://safestock-ai.streamlit.app/)
+[![Safe Stock Web App](https://safestock-ai.streamlit.app/)]
 
 ## Key Features
 📈 Real-Time Stock Prices: Stay updated with dynamic market data from Yahoo Finance.
@@ -27,9 +27,8 @@ The app is powered by:
 [<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab2-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab2-ss.png)
 [<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab3-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab3-ss.png)
 
-Models & Methodology
-Model Overview
-The core of SafeStock AI is an LSTM neural network, specifically designed for sequential data like time-series. The model is trained on historical stock prices to predict future movements.
+## Models & Methodology
+The core of SafeStock AI is an LSTM neural network, specifically designed for sequential data like time series. The model is trained on historical stock prices and technical indicators to predict future movements.
 
 ## Model Features
 Input Variables: 
