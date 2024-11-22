@@ -38,9 +38,9 @@ Input Variables:
   3-Days Moving Average
 
 Evaluation Metrics:
-  RMSE (Root Mean Squared Error)
-  MAE (Mean Absolute Error)
-  R² (Coefficient of Determination)
+    RMSE (Root Mean Squared Error)
+    MAE (Mean Absolute Error)
+    R² (Coefficient of Determination)
 
 Technical Indicators:
   SMA (Simple Moving Average): Tracks short-term trends.
