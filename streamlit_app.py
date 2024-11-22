@@ -23,7 +23,7 @@ st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "ðŸ”
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
 info_multi = '''Welcome to SafeStock AI! ðŸ”®  
 SafeStock AI is your go-to platform for exploring AI-powered stock forecasting and analysis using real-time stock values via Yahoo Finance.    
-Whether you're a data science enthusiast or a market observer, this app blends cutting-edge deep learning with intuitive tools to bring you actionable insights on major stocks like Apple and Google.'''
+Whether you're a data science enthusiast or a market observer, this app blends cutting-edge deep learning with intuitive tools to bring you actionable insights.'''
 
 with tab1: 
     st.header('SafeStock AI Web Application')
