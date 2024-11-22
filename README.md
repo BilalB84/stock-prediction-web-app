@@ -18,8 +18,47 @@ It leverages LSTM (Long Short-Term Memory) models for time-series forecasting, o
 ## How It Works
 The app is powered by:
 
-Data Preprocessing: Historical stock data is cleaned, scaled, and prepared for analysis.
-LSTM Model: A robust time-series forecasting algorithm trained to predict stock price movements.
-Visualization: Interactive charts display historical trends, technical indicators, and model predictions.
+-  Data Preprocessing: Historical stock data is cleaned, scaled, and prepared for analysis.
+- LSTM Model: A robust time-series forecasting algorithm trained to predict stock price movements.
+- Visualization: Interactive charts display historical trends, technical indicators, and model predictions.
 
 ## Screenshots
+
+Models & Methodology
+Model Overview
+The core of SafeStock AI is an LSTM neural network, specifically designed for sequential data like time-series. The model is trained on historical stock prices to predict future movements.
+
+## Model Features
+Input Variables: 
+  Historical price data (Open, Close, Adjusted Close, High, Low, Volume)
+  Garman-Klass Volatility
+  Dollar Volume
+  On Balance Volume (OBV)
+  MACD
+  3-Days Moving Average
+
+Evaluation Metrics:
+  RMSE (Root Mean Squared Error)
+  MAE (Mean Absolute Error)
+  R² (Coefficient of Determination)
+
+Technical Indicators:
+  SMA (Simple Moving Average): Tracks short-term trends.
+  EMA (Exponential Moving Average): Highlights momentum.
+  RSI (Relative Strength Index): Analyzes overbought/oversold conditions.
+  OBV (On-Balance Volume): Measures buying/selling pressure.
+
+Future Enhancements
+- Add support for more stocks and global markets.
+- Incorporate additional AI models like GRU and ARIMA for comparative analysis.
+- Deploy for scalability on cloud platforms (AWS, GCP, or Azure).
+- Provide user-defined customization for technical indicators.
+
+## Disclaimer
+❗ SafeStock AI is a tool for research and educational purposes only. It does not provide financial or investment advice.
+
+## Contact 📩
+For any questions or inquiries, feel free to reach out:
+- **Email:** sevilaymunire68@gmail.com
+- **LinkedIn:** [Sevilay Munire Girgin](www.linkedin.com/in/sevilay-munire-girgin-8902a7159)
+Thank you for visiting my project repository. Happy and accurate predicting! 💕
