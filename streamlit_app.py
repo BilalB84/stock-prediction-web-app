@@ -21,8 +21,7 @@ google_model = load_model('./2nd-Google-LSTM-Model.h5', custom_objects={"LSTM": 
 # Page Layout
 st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "🔮", layout = "wide")
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
-info_multi = '''Welcome to SafeStock AI! 🔮  
-SafeStock AI is your go-to platform for exploring AI-powered stock forecasting and analysis using real-time stock values via Yahoo Finance.    
+info_multi = '''🔮 SafeStock AI is your go-to platform for exploring AI-powered stock forecasting and analysis using real-time stock values via Yahoo Finance.      
 Whether you're a data science enthusiast or a market observer, this app blends cutting-edge deep learning with intuitive tools to bring you actionable insights.'''
 
 with tab1: 
@@ -172,7 +171,7 @@ tab1.warning('Disclaimer: This project is for research and educational purposes 
 #-----------------------TAB2---------------
 with tab2: 
     st.header('SafeStock AI Web Application')
-    st.info('StockSense AI uses real-time stock values via Yahoo Finance.')
+    st.info('🤖 AI Predictions: View next 5-day stock price forecasts, powered by advanced LSTM models.')
     st.write(' ')
 
 # Define function to get raw data
