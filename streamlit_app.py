@@ -12,7 +12,7 @@ from keras.layers import LSTM
 
 # Page Layout
 st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "🔮", layout = "wide")
-tab1, tab2, tab3 = st.tabs(["Forecast", "GOOGLE Stock", "Dashboard"])
+tab1, tab2 = st.tabs(["Forecast", "Dashboard"])
 info_multi = '''🔮 SafeStock AI is your go-to platform for exploring AI-powered stock forecasting and analysis using real-time stock values via Yahoo Finance.      
 Whether you're a data science enthusiast or a market observer, this app blends cutting-edge deep learning with intuitive tools to bring you actionable insights.'''
 
@@ -127,34 +127,13 @@ def create_feed_dset(df_processed, feature_list, n_past, model):
     prediction = model.predict(dataX)
     return prediction, scaler
 
-# Define function scale data
-def create_feed_dset2(df_processed, feature_list, n_past, model):
-    dset = df_processed.filter(feature_list)
-    dset.dropna(axis = 0, inplace = True)
-
-    # Scale the datasets
-    scaler = MinMaxScaler(feature_range = (0, 1))
-    df_scaled = scaler.fit_transform(dset)
-
-    # Create X from the dataset
-    dataX = []
-    dataY = []
-    for i in range(n_past, len(df_scaled)):
-        dataX.append(df_scaled[i - n_past:i, 0:df_scaled.shape[1]])
-        dataY.append(df_scaled[i,0])
-    dataX = np.array(dataX)
-    
-    # Make predictions using the model
-    prediction = model.predict(dataX)
-    return prediction, scaler
-
 # Call to get prediction
 apple_prediction_init, scaler1 = create_feed_dset(apple_df_processed, apple_features, 21, apple_model)
 amazon_prediction_init, scaler2 = create_feed_dset(amazon_df_processed, amazon_features, 15, amazon_model)
-google_prediction_init, scaler3 = create_feed_dset2(google_df_processed, google_features, 21, google_model)
+google_prediction_init, scaler3 = create_feed_dset(google_df_processed, google_features, 21, google_model)
 intel_prediction_init, scaler4 = create_feed_dset(intel_df_processed, intel_features, 25, intel_model)
 meta_prediction_init, scaler5 = create_feed_dset(meta_df_processed, meta_features, 20, meta_model)
-microsoft_prediction_init, scaler6 = create_feed_dset2(microsoft_df_processed, microsoft_features, 20, microsoft_model)
+microsoft_prediction_init, scaler6 = create_feed_dset(microsoft_df_processed, microsoft_features, 20, microsoft_model)
 tesla_prediction_init, scaler7 = create_feed_dset(tesla_df_processed, tesla_features, 15, tesla_model)
 
 # Inverse transformation for 5 features
@@ -256,108 +235,7 @@ with tab1.container(border = True):
 
 tab1.warning('Disclaimer: This project is for research and educational purposes only and is not intended for financial or investment advice.', icon="❗")
 
-#-----------------------TAB2---------------
-with tab2: 
-    st.header('SafeStock AI Web Application')
-    st.info('🤖 AI Predictions: View next 5-day stock price forecasts, powered by advanced LSTM models.')
-    st.write(' ')
-
-# Define function to get raw data
-def raw_google_data():
-    # Determine end and start dates for dataset download
-    end = datetime.now()
-    start = datetime(end.year, end.month - 2, end.day)
-
-    # Download Apple's dataset between start and end dates
-    google_df = yf.download('GOOGL', start=start, end=end)
-    
-    column_dict = {'Open': 'open', 'High': 'high', 'Low': 'low',
-                   'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}
-    google_df = google_df.rename(columns=column_dict)
-    google_df.index.names = ['date']
-    return google_df
-raw_google_df = raw_google_data()
-
-def google_process(df):
-    # Add additional calculated features
-    df['dollar_volume'] = (df['adj_close'] * df['volume']) / 1e6
-    df['obv'] = On_Balance_Volume(df['close'], df['volume'])
-    df['ma_3_days'] = df['adj_close'].rolling(3).mean()
-    df['macd'] = df['close'].ewm(span = 12, adjust = False).mean() - df['close'].ewm(span = 26, adjust = False).mean()
-    # Filter and preprocess the dataset
-    google_dset = df[['adj_close', 'volume', 'dollar_volume', 'obv', 'ma_3_days', 'macd']]
-    google_dset.dropna(axis=0, inplace=True)
-    google_test_scaled = scaler.fit_transform(google_dset)
-    return google_test_scaled
-
-google_dataset = google_process(raw_google_df)
-
-def feed_google_model(dataset, n_past, modelname, scaler):
-    # Create X from the dataset
-    GdataX = []
-    GdataY = []
-    for i in range(n_past, len(dataset)):
-        GdataX.append(dataset[i - n_past:i, 0:dataset.shape[1]])
-        GdataY.append(dataset[i,0])
-    GtestX = np.array(GdataX)
-    
-    # Make predictions using the model
-    pred_google = modelname.predict(GtestX)
-    
-    # Repeat predictions and reshape to original scale
-    pred_google_array = np.repeat(pred_google, 6, axis = -1)
-    preds_google = scaler.inverse_transform(np.reshape(pred_google_array, (len(pred_google), 6)))[:5, 0]
-    return preds_google
-
-google_prediction = feed_google_model(google_dataset, 21, google_model, scaler).tolist()
-# create a dataframe
-google_pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'], 'Adj. Closing Price($)': [ '%.2f' % elem for elem in google_prediction]})
-
-# set the index to the 'name' column
-google_pred_df.set_index('Predicted Day', inplace=True)
-
-# Display result
-title2 = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Google Share For Next 5 Days</strong></div>"""
-
-tab2.col1, tab2.col2 = tab2.columns(2)
-with tab2.col1:
-    st.markdown(title2, unsafe_allow_html=True)
-    st.dataframe(google_pred_df)
-
-actual_google_values  = raw_google_df['adj_close'].values.tolist()
-
-# Calculate the comparison between predicted next price and last actual price
-if actual_google_values and google_prediction:
-    last_actual_price = actual_google_values[-1][0]
-    next_predicted_price = google_prediction[0]
-
-    percent_change = (next_predicted_price - last_actual_price) / last_actual_price * 100
-
-    insight2 = f"""
-    <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-        <strong>The next predicted Google price is:</strong> <span style="color: #4CAF50;">${next_predicted_price:.2f}</span><br>
-        <strong>Last actual Google price:</strong> <span style="color: #FF5722;">${last_actual_price:.2f}</span><br>
-        <strong>Change:</strong> <span style="color: {'#4CAF50' if percent_change >= 0 else '#FF5722'};">{percent_change:+.2f}%</span>
-    </div>
-    """
-else:
-    insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
-
-# Display the insight using Markdown with HTML formatting
-with tab2.col2:
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.markdown(insight2, unsafe_allow_html=True)
-
-with tab2.container(border = True):
-    st.markdown(dedication, unsafe_allow_html=True)
-    st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
-
-tab2.warning('Disclaimer: This project is for research and educational purposes only and is not intended for financial or investment advice.', icon="❗")
-
-#--------TAB3----------
+#--------TAB2----------
 import plotly.graph_objects as go
 from datetime import date
 
