@@ -211,10 +211,7 @@ def generate_insight(df_processed, pred_list):
     else:
         # Fallback message for insufficient data
         insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
-  
-    # Display the insight using the provided container
-    with container:
-        st.markdown(insight, unsafe_allow_html=True)
+    return insight
 
 # Display result
 title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>"""
@@ -224,10 +221,8 @@ with tab1.col1:
     st.markdown(title, unsafe_allow_html=True)
     st.dataframe(pred_df)
 
-# Call the function with a Streamlit container
-tab1_col2 = st.container(generate_insight(google_df_processed, google_pred_list, tab1_col2))
-generate_insight(google_df_processed, google_pred_list, tab1_col2)
-
+# Call the generate_insight function 
+insight = generate_insight(google_df_processed, google_pred_list)
 
 with tab1.col2:
     st.write(' ')
