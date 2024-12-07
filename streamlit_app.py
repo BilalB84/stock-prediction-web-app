@@ -172,7 +172,7 @@ def inverse_transform_predictions2(prediction_init, scaler):
     prediction_array = np.repeat(prediction_init, 6, axis = -1)  # Repeat values along the last axis
 
     # Perform the inverse transform and extract the first column
-    pred = scaler2.inverse_transform(np.reshape(prediction_array, (len(prediction_init), 6)))[:5, 0]
+    pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction_init), 6)))[:5, 0]
     return pred
 
 
@@ -181,8 +181,8 @@ amazon_pred_list = inverse_transform_predictions1(amazon_prediction_init, scaler
 intel_pred_list = inverse_transform_predictions1(intel_prediction_init, scaler).tolist()
 meta_pred_list = inverse_transform_predictions1(meta_prediction_init, scaler).tolist()
 tesla_pred_list = inverse_transform_predictions1(tesla_prediction_init, scaler).tolist()
-google_pred_list = inverse_transform_predictions2(google_prediction_init, scaler).tolist()
-microsoft_pred_list = inverse_transform_predictions2(microsoft_prediction_init, scaler).tolist()
+google_pred_list = inverse_transform_predictions2(google_prediction_init, scaler2).tolist()
+microsoft_pred_list = inverse_transform_predictions2(microsoft_prediction_init, scaler2).tolist()
 
 # Function to create prediction dataframe
 def prediction_table(pred_list):
