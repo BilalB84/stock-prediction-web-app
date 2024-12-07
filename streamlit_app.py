@@ -247,7 +247,7 @@ def generate_insight(df_processed, pred_list, container):
 
 # Call the function with a Streamlit container
 tab1_col2 = st.container()
-generate_stock_insight(google_df_processed, google_pred_list, tab1_col2)
+generate_insight(google_df_processed, google_pred_list, tab1_col2)
 
 dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
 with tab1.container(border = True):
