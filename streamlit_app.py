@@ -224,7 +224,7 @@ with tab1.col1:
 # Call the generate_insight function
 insight = generate_insight(google_df_processed, google_pred_list)
 
-with tab2.col2:
+with tab1.col2:
     st.write(' ')
     st.write(' ')
     st.write(' ')
