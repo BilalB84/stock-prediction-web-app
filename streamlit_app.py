@@ -144,7 +144,7 @@ def inverse_transform_predictions1(prediction_init, scaler):
 
     # Perform the inverse transform and extract the first column
     scaler = MinMaxScaler(feature_range = (0, 1))
-    pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction), 5)))[:5, 0]
+    pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction_init), 5)))[:5, 0]
     return pred
 
 # Inverse transformation for 6 features
@@ -154,7 +154,7 @@ def inverse_transform_predictions2(prediction_init, scaler):
 
     # Perform the inverse transform and extract the first column
     scaler = MinMaxScaler(feature_range = (0, 1))
-    pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction), 6)))[:5, 0]
+    pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction_init), 6)))[:5, 0]
     return pred
 
 
