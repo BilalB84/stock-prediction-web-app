@@ -10,14 +10,6 @@ import keras
 from keras.models import load_model
 from keras.layers import LSTM
 
-class CustomLSTM(LSTM):
-    def __init__(self, *args, **kwargs):
-        kwargs.pop("time_major", None)  # Remove unrecognized argument
-        super().__init__(*args, **kwargs)
-
-model = load_model('./Apple_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
-google_model = load_model('./Google_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
-
 # Page Layout
 st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "🔮", layout = "wide")
 tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
@@ -29,22 +21,31 @@ with tab1:
     st.info(info_multi)
     st.write(' ')
 
-# Define function to get raw data
-def raw_data():
-    # Determine end and start dates for dataset download
-    end = datetime.now()
-    start = datetime(end.year, end.month - 2, end.day)
+class CustomLSTM(LSTM):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("time_major", None)  # Remove unrecognized argument
+        super().__init__(*args, **kwargs)
 
-    # Download Apple's dataset between start and end dates
-    apple_df = yf.download('AAPL', start=start, end=end)
+# Load Models
+apple_model = load_model('./models/Apple_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+google_model = load_model('./models/Google_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+tesla_model = load_model('./models/3rd-Tesla-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+amazon_model = load_model('./models/Amazon-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+intel_model = load_model('./models/Intel-2nd-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+meta_model = load_model('./models/Meta-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
+microsoft_model = load_model('./models/Microsoft-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
-    # Rename columns of the Apple DataFrame
-    column_dict = {'Open': 'open', 'High': 'high', 'Low': 'low',
-                   'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}
-    apple_df = apple_df.rename(columns=column_dict)
-    apple_df.index.names = ['date']
-    return apple_df
-raw_apple_df = raw_data()
+# List selected features
+apple_features = ['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
+amazon_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ema']
+google_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ma_3_days', 'macd']
+intel_features = ['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
+meta_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ema']
+microsoft_features = ['adj_close', 'volume', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
+tesla_features = ['adj_close', 'dollar_volume', 'obv', 'ema', 'ma_3_days']
+
+# Ticker List
+ticker_list = ['AAPL', 'AMZN', 'GOOG', 'INTC', 'META', 'MSFT', 'TSLA']
 
 # Define function to calculate 'On Balance Volume (OBV)'
 def On_Balance_Volume(Close, Volume):
@@ -52,114 +53,181 @@ def On_Balance_Volume(Close, Volume):
     OBV = np.cumsum(np.where(change > 0, Volume, np.where(change < 0, -Volume, 0)))
     return OBV
 
-scaler = MinMaxScaler(feature_range = (0, 1))
-def apple_process():
+# Define function to retrieve data from Yahoo Finance API and conduct feature engineering
+def df_process(ticker):
     # Determine end and start dates for dataset download
     end = datetime.now()
     start = datetime(end.year, end.month - 2, end.day)
 
-    # Download Apple's dataset between start and end dates
-    apple_df = yf.download('AAPL', start=start, end=end)
+    # Download data between start and end dates
+    df = yf.download(ticker, start = start, end = end)
+    df.columns = df.columns.droplevel(1)
 
-    # Rename columns of the Apple DataFrame
+    # Rename columns of the DataFrame
     column_dict = {'Open': 'open', 'High': 'high', 'Low': 'low',
                    'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}
-    apple_df = apple_df.rename(columns=column_dict)
-    apple_df.index.names = ['date']
+    df = df.rename(columns = column_dict)
+    df.index.names = ['date']
 
-    # Add additional calculated features
-    apple_df['garman_klass_volatility'] = ((np.log(apple_df['high']) - np.log(apple_df['low'])) ** 2) / 2 - \
-                                          (2 * np.log(2) - 1) * ((np.log(apple_df['adj_close']) - np.log(apple_df['open'])) ** 2)
-    apple_df['dollar_volume'] = (apple_df['adj_close'] * apple_df['volume']) / 1e6
-    apple_df['obv'] = On_Balance_Volume(apple_df['close'], apple_df['volume'])
-    apple_df['ma_3_days'] = apple_df['adj_close'].rolling(3).mean()
+    # Add technical indicators via feature engineering:
+    # Create 'garman_klass_volatility'
+    df['garman_klass_volatility'] = ((np.log(df['high']) - np.log(df['low'])) ** 2) / 2 - \
+                                    (2 * np.log(2) - 1) * ((np.log(df['adj_close']) - np.log(df['open'])) ** 2)
 
-    # Filter and preprocess the dataset
-    apple_dset = apple_df[['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']]
-    apple_dset.dropna(axis=0, inplace=True)
-    apple_test_scaled = scaler.fit_transform(apple_dset)
-    return apple_test_scaled
+    # Create 'dollar_volume'
+    df['dollar_volume'] = (df['close'] * df['volume']) / 1e6
 
-apple_dataset = apple_process()
+    # Create 'rsi' column
+    delta = df['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    df['rsi'] = 100 - (100 / (1 + rs))
 
-def feed_model(dataset, n_past, model, scaler):
+    # Create 'ema' column
+    df['ema'] = df['close'].ewm(span=14, adjust=False).mean()
+
+    # Create 'obv'
+    df['obv'] = On_Balance_Volume(df['close'], df['volume'])
+
+    # Create 'macd'
+    df['macd'] = df['close'].ewm(span = 12, adjust = False).mean() - df['close'].ewm(span = 26, adjust = False).mean()
+
+    # Create 'ma_3_days'
+    df['ma_3_days'] = df['close'].rolling(3).mean()
+    return df
+
+# Call to fetch and engineer data 
+apple_df_processed =  df_process(ticker_list[0])
+amazon_df_processed =  df_process(ticker_list[1])
+google_df_processed =  df_process(ticker_list[2])
+intel_df_processed =  df_process(ticker_list[3])
+meta_df_processed =  df_process(ticker_list[4])
+microsoft_df_processed =  df_process(ticker_list[5])
+tesla_df_processed =  df_process(ticker_list[6])
+
+# Define function scale data
+def create_feed_dset(df_processed, feature_list, n_past, model):
+    dset = df_process.filter(feature_list)
+    dset.dropna(axis = 0, inplace = True)
+
+    # Scale the datasets
+    scaler = MinMaxScaler(feature_range = (0, 1))
+    df_scaled = scaler.fit_transform(dset)
+
     # Create X from the dataset
     dataX = []
     dataY = []
-    for i in range(n_past, len(dataset)):
-        dataX.append(dataset[i - n_past:i, 0:dataset.shape[1]])
-        dataY.append(dataset[i,0])
-    testX = np.array(dataX)
+    for i in range(n_past, len(df_scaled)):
+        dataX.append(df_scaled[i - n_past:i, 0:df_scaled.shape[1]])
+        dataY.append(df_scaled[i,0])
+    dataX = np.array(dataX)
     
     # Make predictions using the model
-    pred_initial = model.predict(testX)
-    
-    # Repeat predictions and reshape to original scale
-    pred_array = np.repeat(pred_initial, 5, axis = -1)
-    preds = scaler.inverse_transform(np.reshape(pred_array, (len(pred_initial), 5)))[:5, 0]
-    return preds
+    prediction = model.predict(dataX)
+    return prediction, scaler
 
-prediction = feed_model(apple_dataset, 21, model, scaler).tolist()
-# create a dataframe
-pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'],
-                        'Adj. Closing Price($)': [ '%.2f' % elem for elem in prediction]})
 
-# set the index to the 'name' column
-pred_df.set_index('Predicted Day', inplace=True)
+# Call to get prediction
+apple_prediction_init = create_feed_dset(apple_df_processed, apple_features, 21, apple_model)
+amazon_prediction_init = create_feed_dset(amazon_df_processed, amazon_features, 15, amazon_model)
+google_prediction_init = create_feed_dset(google_df_processed, google_features, 21, google_model)
+intel_prediction_init = create_feed_dset(intel_df_processed, intel_features, 25, intel_model)
+meta_prediction_init = create_feed_dset(meta_df_processed, meta_features, 20, meta_model)
+microsoft_prediction_init = create_feed_dset(microsoft_df_processed, microsoft_features, 20, microsoft_model)
+tesla_prediction_init = create_feed_dset(tesla_df_processed, tesla_features, 15, tesla_model)
+
+# Inverse transformation for 5 features
+def inverse_transform_predictions1(prediction_init, scaler):
+    # Prepare the dataset for inverse transform
+    prediction_array = np.repeat(prediction_init, 5, axis = -1)  # Repeat values along the last axis
+
+    # Perform the inverse transform and extract the first column
+    pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction), 5)))[:5, 0]
+    return pred
+
+# Inverse transformation for 6 features
+def inverse_transform_predictions2(prediction_init, scaler):
+    # Prepare the dataset for inverse transform
+    prediction_array = np.repeat(prediction_init, 6, axis = -1)  # Repeat values along the last axis
+
+    # Perform the inverse transform and extract the first column
+    pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction), 6)))[:5, 0]
+    return pred
+
+
+apple_pred_list = inverse_transform_predictions1(apple_prediction_init, scaler).tolist()
+amazon_pred_list = inverse_transform_predictions1(amazon_prediction_init, scaler).tolist()
+intel_pred_list = inverse_transform_predictions1(intel_prediction_init, scaler).tolist()
+meta_pred_list = inverse_transform_predictions1(meta_prediction_init, scaler).tolist()
+tesla_pred_list = inverse_transform_predictions1(tesla_prediction_init, scaler).tolist()
+google_pred_list = inverse_transform_predictions2(google_prediction_init, scaler).tolist()
+microsoft_pred_list = inverse_transform_predictions2(microsoft_prediction_init, scaler).tolist()
+
+# Function to create prediction dataframe
+def prediction_table(pred_list):
+    pred_df = pd.DataFrame({'Predicted Day': ['Tomorrow', '2nd Day', '3rd Day', '4th Day', '5th Day'], 
+    'Adj. Closing Price($)': [ '%.2f' % elem for elem in pred_list]})
+
+    # Set df index to the 'name' column
+    pred_df.set_index('Predicted Day', inplace=True)
+    return pred_df
+
+pred_df = prediction_table(google_pred_list)
 
 # Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Apple Share For Next 5 Days</strong></div>"""
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>"""
 
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
     st.markdown(title, unsafe_allow_html=True)
     st.dataframe(pred_df)
 
-actual_values  = raw_apple_df['adj_close'].values.tolist()
-
-# Calculate the comparison between predicted next price and last actual price
-if actual_values and prediction:
-    last_actual_price = actual_values[-1][0]
-    next_predicted_price = prediction[0]
-
-    percent_change = (next_predicted_price - last_actual_price) / last_actual_price * 100
-
-    insight = f"""
-    <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-        <strong>The next predicted stock price is:</strong> <span style="color: #4CAF50;">${next_predicted_price:.2f}</span><br>
-        <strong>Last actual price:</strong> <span style="color: #FF5722;">${last_actual_price:.2f}</span><br>
-        <strong>Change:</strong> <span style="color: {'#4CAF50' if percent_change >= 0 else '#FF5722'};">{percent_change:+.2f}%</span>
-    </div>
+# Function to generate prediction insight
+def generate_insight(df_processed, pred_list, container):
     """
-else:
-    insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
+    Generates and displays stock price insight based on actual and predicted values.
 
-# Display the insight using Markdown with HTML formatting
-with tab1.col2:
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.write(' ')
-    st.markdown(insight, unsafe_allow_html=True)
+    Parameters:
+    df (pd.DataFrame): DataFrame containing the actual stock prices.
+    prediction (list): List containing the next predicted price.
+    container (streamlit.DeltaGenerator): Streamlit container for displaying the insight.
+    """
+    # Extract actual values from the DataFrame
+    actual_values = df_processed['adj_close'].values.tolist()
 
-multi = '''This project's predictive AI is multivariate LSTM neural networks.  
-Long Short-Term Memory (LSTM) networks, a variant of recurrent neural networks (RNNs), have proven effective for time series forecasting, particularly when dealing with sequential data like stock prices.    
-Stock price movement is influenced by a variety of factors; thus, multivariate time series forecasting is used. The deep learning model captures the underlying patterns and relationships in the data due to domain-based feature engineering.'''
+    # Ensure there is data to process
+    if actual_values and prediction:
+        last_actual_price = actual_values[-1]  # Access the last actual price
+        next_predicted_price = pred_list[0]  # Predicted next price
 
-tab1.col1, tab1.col2, tab1.col3 = tab1.columns(3)
-with tab1.col1:
-    with st.popover("AI Model Infographics"):
-        st.markdown(multi)
-        st.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
+        # Calculate percentage change
+        percent_change = (next_predicted_price - last_actual_price) / last_actual_price * 100
 
-with tab1.col2:
-    with st.popover("Variables Used by AI"):
-        st.image("./images/variable-table.png")
+        # Generate the HTML insight
+        insight = f"""
+        <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+            <strong>The next predicted stock price is:</strong> 
+            <span style="color: #4CAF50;">${next_predicted_price:.2f}</span><br>
+            <strong>Last actual price:</strong> 
+            <span style="color: #FF5722;">${last_actual_price:.2f}</span><br>
+            <strong>Change:</strong> 
+            <span style="color: {'#4CAF50' if percent_change >= 0 else '#FF5722'};">
+                {percent_change:+.2f}%
+            </span>
+        </div>
+        """
+    else:
+        # Fallback message for insufficient data
+        insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
 
-with tab1.col3:
-    with st.popover("Model Evaluation"):
-        st.image("./images/apple-eval.png")
+    # Display the insight using the provided container
+    with container:
+        st.markdown(insight, unsafe_allow_html=True)
 
+# Call the function with a Streamlit container
+tab1_col2 = st.container()
+generate_stock_insight(google_df_processed, google_pred_list, tab1_col2)
 
 dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
 with tab1.container(border = True):
