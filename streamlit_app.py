@@ -245,7 +245,7 @@ insight = generate_insight(selected_df_processed, selected_pred_list)
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
     st.markdown(f"""<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"> 
-    <strong>Selected Stock:</strong> {stock_selection}<be>
+    <strong>{stock_selection}</strong><be> 
     <strong>Predictions for the Next 5 Days:</strong>
     </div>""", unsafe_allow_html=True)
     st.dataframe(pred_df)
