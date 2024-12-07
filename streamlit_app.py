@@ -12,7 +12,7 @@ from keras.layers import LSTM
 
 # Page Layout
 st.set_page_config(page_title ="SafeStock AI Web Application",  page_icon = "🔮", layout = "wide")
-tab1, tab2, tab3 = st.tabs(["APPLE Stock", "GOOGLE Stock", "Dashboard"])
+tab1, tab2, tab3 = st.tabs(["Forecast", "GOOGLE Stock", "Dashboard"])
 info_multi = '''🔮 SafeStock AI is your go-to platform for exploring AI-powered stock forecasting and analysis using real-time stock values via Yahoo Finance.      
 Whether you're a data science enthusiast or a market observer, this app blends cutting-edge deep learning with intuitive tools to bring you actionable insights.'''
 
@@ -108,7 +108,7 @@ tesla_df_processed =  df_process(ticker_list[6])
 
 # Define function scale data
 def create_feed_dset(df_processed, feature_list, n_past, model):
-    dset = df_process.filter(feature_list)
+    dset = df_processed.filter(feature_list)
     dset.dropna(axis = 0, inplace = True)
 
     # Scale the datasets
