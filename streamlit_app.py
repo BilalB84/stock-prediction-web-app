@@ -217,7 +217,7 @@ def generate_insight(df_processed, pred_list, container):
     actual_values = df_processed['adj_close'].values.tolist()
 
     # Ensure there is data to process
-    if actual_values and prediction:
+    if actual_values and pred_list:
         last_actual_price = actual_values[-1]  # Access the last actual price
         next_predicted_price = pred_list[0]  # Predicted next price
 
