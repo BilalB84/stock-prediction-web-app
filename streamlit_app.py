@@ -225,7 +225,7 @@ with tab1.col1:
     st.dataframe(pred_df)
 
 # Call the function with a Streamlit container
-tab1_col2 = st.container():
+tab1_col2 = st.container(generate_stock_insight(google_df_processed, google_pred_list, tab1_col2))
 generate_stock_insight(google_df_processed, google_pred_list, tab1_col2)
 
 
