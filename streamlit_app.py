@@ -241,11 +241,13 @@ elif stock_selection == "Tesla":
 pred_df = prediction_table(selected_pred_list)
 insight = generate_insight(selected_df_processed, selected_pred_list)
 
-# Display results
-st.markdown("""<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>""", unsafe_allow_html=True)
 
 tab1.col1, tab1.col2 = tab1.columns(2)
 with tab1.col1:
+    st.markdown(f"""<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"> 
+    <strong>Selected Stock:</strong> {stock_selection}<be>
+    <strong>Predictions for the Next 5 Days:</strong>
+    </div>""", unsafe_allow_html=True)
     st.dataframe(pred_df)
 
 with tab1.col2:
