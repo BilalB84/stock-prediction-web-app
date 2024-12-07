@@ -133,8 +133,8 @@ def create_feed_dset2(df_processed, feature_list, n_past, model):
     dset.dropna(axis = 0, inplace = True)
 
     # Scale the datasets
-    scaler2 = MinMaxScaler(feature_range = (0, 1))
-    df_scaled = scaler2.fit_transform(dset)
+    scaler = MinMaxScaler(feature_range = (0, 1))
+    df_scaled = scaler.fit_transform(dset)
 
     # Create X from the dataset
     dataX = []
@@ -146,16 +146,16 @@ def create_feed_dset2(df_processed, feature_list, n_past, model):
     
     # Make predictions using the model
     prediction = model.predict(dataX)
-    return prediction, scaler2
+    return prediction, scaler
 
 # Call to get prediction
-apple_prediction_init, scaler = create_feed_dset(apple_df_processed, apple_features, 21, apple_model)
-amazon_prediction_init, scaler = create_feed_dset(amazon_df_processed, amazon_features, 15, amazon_model)
-google_prediction_init, scaler2 = create_feed_dset2(google_df_processed, google_features, 21, google_model)
-intel_prediction_init, scaler = create_feed_dset(intel_df_processed, intel_features, 25, intel_model)
-meta_prediction_init, scaler = create_feed_dset(meta_df_processed, meta_features, 20, meta_model)
-microsoft_prediction_init, scaler2 = create_feed_dset2(microsoft_df_processed, microsoft_features, 20, microsoft_model)
-tesla_prediction_init, scaler = create_feed_dset(tesla_df_processed, tesla_features, 15, tesla_model)
+apple_prediction_init, scaler1 = create_feed_dset(apple_df_processed, apple_features, 21, apple_model)
+amazon_prediction_init, scaler2 = create_feed_dset(amazon_df_processed, amazon_features, 15, amazon_model)
+google_prediction_init, scaler3 = create_feed_dset2(google_df_processed, google_features, 21, google_model)
+intel_prediction_init, scaler4 = create_feed_dset(intel_df_processed, intel_features, 25, intel_model)
+meta_prediction_init, scaler5 = create_feed_dset(meta_df_processed, meta_features, 20, meta_model)
+microsoft_prediction_init, scaler6 = create_feed_dset2(microsoft_df_processed, microsoft_features, 20, microsoft_model)
+tesla_prediction_init, scaler7 = create_feed_dset(tesla_df_processed, tesla_features, 15, tesla_model)
 
 # Inverse transformation for 5 features
 def inverse_transform_predictions1(prediction_init, scaler):
@@ -176,13 +176,13 @@ def inverse_transform_predictions2(prediction_init, scaler):
     return pred
 
 
-apple_pred_list = inverse_transform_predictions1(apple_prediction_init, scaler).tolist()
-amazon_pred_list = inverse_transform_predictions1(amazon_prediction_init, scaler).tolist()
-intel_pred_list = inverse_transform_predictions1(intel_prediction_init, scaler).tolist()
-meta_pred_list = inverse_transform_predictions1(meta_prediction_init, scaler).tolist()
-tesla_pred_list = inverse_transform_predictions1(tesla_prediction_init, scaler).tolist()
-google_pred_list = inverse_transform_predictions2(google_prediction_init, scaler2).tolist()
-microsoft_pred_list = inverse_transform_predictions2(microsoft_prediction_init, scaler2).tolist()
+apple_pred_list = inverse_transform_predictions1(apple_prediction_init, scaler1).tolist()
+amazon_pred_list = inverse_transform_predictions1(amazon_prediction_init, scaler2).tolist()
+intel_pred_list = inverse_transform_predictions1(intel_prediction_init, scaler4).tolist()
+meta_pred_list = inverse_transform_predictions1(meta_prediction_init, scaler5).tolist()
+tesla_pred_list = inverse_transform_predictions1(tesla_prediction_init, scaler7).tolist()
+google_pred_list = inverse_transform_predictions2(google_prediction_init, scaler3).tolist()
+microsoft_pred_list = inverse_transform_predictions2(microsoft_prediction_init, scaler6).tolist()
 
 # Function to create prediction dataframe
 def prediction_table(pred_list):
@@ -350,20 +350,6 @@ with tab2.col2:
     st.write(' ')
     st.write(' ')
     st.markdown(insight2, unsafe_allow_html=True)
-
-tab2.col1, tab2.col2, tab2.col3 = tab2.columns(3)
-with tab2.col1:
-    with st.popover("AI Model Infographics"):
-        st.markdown(multi)
-        st.link_button("Predictive AI Code by SMG", "https://github.com/SevilayMuni/Multivariate-TimeSeries-Forecast-LSTM-Apple-Google-Stocks/tree/main/Apple-Stock-LSTM-Model")
-
-with tab2.col2:
-    with st.popover("Variables Used by AI"):
-        st.image("./images/google-table.png")
-
-with tab2.col3:
-    with st.popover("Model Performance"):
-        st.image("./images/google-eval.png")
 
 with tab2.container(border = True):
     st.markdown(dedication, unsafe_allow_html=True)
