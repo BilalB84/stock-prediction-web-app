@@ -212,7 +212,7 @@ def generate_insight(df_processed, pred_list):
     return insight
 
 # Stock selection button
-stock_selection = st.radio("Select a stock to display predictions:", options=["Apple", "Amazon", "Google", "Intel", "Meta", "Microsoft", "Tesla"])
+stock_selection = tab1.selectbox("Select stock for predictions:", options=["Apple", "Amazon", "Google", "Intel", "Meta", "Microsoft", "Tesla"])
 
 # Update data based on selection
 if stock_selection == "Apple":
@@ -244,8 +244,8 @@ insight = generate_insight(selected_df_processed, selected_pred_list)
 # Display results
 st.markdown("""<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>""", unsafe_allow_html=True)
 
-col1, col2 = st.columns(2)
-with col1:
+tab1.col1, tab1.col2 = tab1.columns(2)
+with tab1.col1:
     st.dataframe(pred_df)
 
 with tab1.col2:
