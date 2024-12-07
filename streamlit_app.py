@@ -154,7 +154,7 @@ def inverse_transform_predictions2(prediction_init, scaler):
     pred = scaler.inverse_transform(np.reshape(prediction_array, (len(prediction_init), 6)))[:5, 0]
     return pred
 
-
+# Get prediction list
 apple_pred_list = inverse_transform_predictions1(apple_prediction_init, scaler1).tolist()
 amazon_pred_list = inverse_transform_predictions1(amazon_prediction_init, scaler2).tolist()
 intel_pred_list = inverse_transform_predictions1(intel_prediction_init, scaler4).tolist()
@@ -211,7 +211,10 @@ def generate_insight(df_processed, pred_list):
     else:
         # Fallback message for insufficient data
         insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
-
+  
+    # Display the insight using the provided container
+    with container:
+        st.markdown(insight, unsafe_allow_html=True)
 
 # Display result
 title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>"""
@@ -221,8 +224,10 @@ with tab1.col1:
     st.markdown(title, unsafe_allow_html=True)
     st.dataframe(pred_df)
 
-# Call the generate_insight function
-insight = generate_insight(google_df_processed, google_pred_list)
+# Call the function with a Streamlit container
+tab1_col2 = st.container():
+generate_stock_insight(google_df_processed, google_pred_list, tab1_col2)
+
 
 with tab1.col2:
     st.write(' ')
