@@ -127,14 +127,34 @@ def create_feed_dset(df_processed, feature_list, n_past, model):
     prediction = model.predict(dataX)
     return prediction, scaler
 
+# Define function scale data
+def create_feed_dset2(df_processed, feature_list, n_past, model):
+    dset = df_processed.filter(feature_list)
+    dset.dropna(axis = 0, inplace = True)
+
+    # Scale the datasets
+    scaler = MinMaxScaler(feature_range = (0, 1))
+    df_scaled = scaler.fit_transform(dset)
+
+    # Create X from the dataset
+    dataX = []
+    dataY = []
+    for i in range(n_past, len(df_scaled)):
+        dataX.append(df_scaled[i - n_past:i, 0:df_scaled.shape[1]])
+        dataY.append(df_scaled[i,0])
+    dataX = np.array(dataX)
+    
+    # Make predictions using the model
+    prediction = model.predict(dataX)
+    return prediction, scaler
 
 # Call to get prediction
 apple_prediction_init, scaler = create_feed_dset(apple_df_processed, apple_features, 21, apple_model)
 amazon_prediction_init, scaler = create_feed_dset(amazon_df_processed, amazon_features, 15, amazon_model)
-google_prediction_init, scaler = create_feed_dset(google_df_processed, google_features, 21, google_model)
+google_prediction_init, scaler = create_feed_dset2(google_df_processed, google_features, 21, google_model)
 intel_prediction_init, scaler = create_feed_dset(intel_df_processed, intel_features, 25, intel_model)
 meta_prediction_init, scaler = create_feed_dset(meta_df_processed, meta_features, 20, meta_model)
-microsoft_prediction_init, scaler = create_feed_dset(microsoft_df_processed, microsoft_features, 20, microsoft_model)
+microsoft_prediction_init, scaler = create_feed_dset2(microsoft_df_processed, microsoft_features, 20, microsoft_model)
 tesla_prediction_init, scaler = create_feed_dset(tesla_df_processed, tesla_features, 15, tesla_model)
 
 # Inverse transformation for 5 features
