@@ -212,9 +212,7 @@ def generate_insight(df_processed, pred_list):
     return insight
 
 # Stock selection button
-tab1.markdown(f"""<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"> 
-    <strong>Select Stock for Predictions</strong></div>""", unsafe_allow_html=True)
-stock_selection = tab1.selectbox("", options=["Apple", "Amazon", "Google", "Intel", "Meta", "Microsoft", "Tesla"])
+stock_selection = tab1.selectbox("Select Stock to Get Predictions:", options=["Apple", "Amazon", "Google", "Intel", "Meta", "Microsoft", "Tesla"])
 
 # Update data based on selection
 if stock_selection == "Apple":
