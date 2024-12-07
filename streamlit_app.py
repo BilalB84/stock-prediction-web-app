@@ -172,8 +172,6 @@ def prediction_table(pred_list):
     pred_df.set_index('Predicted Day', inplace=True)
     return pred_df
 
-pred_df = prediction_table(google_pred_list)
-
 # Function to generate prediction insight
 def generate_insight(df_processed, pred_list):
     """
@@ -213,16 +211,42 @@ def generate_insight(df_processed, pred_list):
         insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
     return insight
 
-# Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>"""
+# Stock selection button
+stock_selection = st.radio("Select a stock to display predictions:", options=["Apple", "Amazon", "Google", "Intel", "Meta", "Microsoft", "Tesla"])
 
-tab1.col1, tab1.col2 = tab1.columns(2)
-with tab1.col1:
-    st.markdown(title, unsafe_allow_html=True)
+# Update data based on selection
+if stock_selection == "Apple":
+    selected_pred_list = apple_pred_list
+    selected_df_processed = apple_df_processed
+elif stock_selection == "Amazon":
+    selected_pred_list = amazon_pred_list
+    selected_df_processed = amazon_df_processed
+elif stock_selection == "Google":
+    selected_pred_list = google_pred_list
+    selected_df_processed = google_df_processed
+elif stock_selection == "Intel":
+    selected_pred_list = intel_pred_list
+    selected_df_processed = intel_df_processed
+elif stock_selection == "Meta":
+    selected_pred_list = meta_pred_list
+    selected_df_processed = meta_df_processed
+elif stock_selection == "Microsoft":
+    selected_pred_list = microsoft_pred_list
+    selected_df_processed = microsoft_df_processed
+elif stock_selection == "Tesla":
+    selected_pred_list = tesla_pred_list
+    selected_df_processed = tesla_df_processed
+
+# Generate prediction table and insights
+pred_df = prediction_table(selected_pred_list)
+insight = generate_insight(selected_df_processed, selected_pred_list)
+
+# Display results
+st.markdown("""<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>""", unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+with col1:
     st.dataframe(pred_df)
-
-# Call the generate_insight function 
-insight = generate_insight(google_df_processed, google_pred_list)
 
 with tab1.col2:
     st.write(' ')
