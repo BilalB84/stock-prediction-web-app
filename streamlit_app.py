@@ -174,16 +174,8 @@ def prediction_table(pred_list):
 
 pred_df = prediction_table(google_pred_list)
 
-# Display result
-title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>"""
-
-tab1.col1, tab1.col2 = tab1.columns(2)
-with tab1.col1:
-    st.markdown(title, unsafe_allow_html=True)
-    st.dataframe(pred_df)
-
 # Function to generate prediction insight
-def generate_insight(df_processed, pred_list, container):
+def generate_insight(df_processed, pred_list):
     """
     Generates and displays stock price insight based on actual and predicted values.
 
@@ -220,13 +212,25 @@ def generate_insight(df_processed, pred_list, container):
         # Fallback message for insufficient data
         insight = "<div style='font-family: Arial, sans-serif;'>Not enough data to generate insights.</div>"
 
-    # Display the insight using the provided container
-    with container:
-        st.markdown(insight, unsafe_allow_html=True)
 
-# Call the function with a Streamlit container
-tab1_col2 = st.container()
-generate_insight(google_df_processed, google_pred_list, tab1_col2)
+# Display result
+title = """<div style="font-family: Arial, sans-serif; font-size: 18px; line-height: 1.6;"><strong>Selected Share For Next 5 Days</strong></div>"""
+
+tab1.col1, tab1.col2 = tab1.columns(2)
+with tab1.col1:
+    st.markdown(title, unsafe_allow_html=True)
+    st.dataframe(pred_df)
+
+# Call the generate_insight function
+insight = generate_insight(google_df_processed, google_pred_list
+
+with tab2.col2:
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.markdown(insight, unsafe_allow_html=True)
+
 
 dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
 with tab1.container(border = True):
