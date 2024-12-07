@@ -222,7 +222,7 @@ with tab1.col1:
     st.dataframe(pred_df)
 
 # Call the generate_insight function
-insight = generate_insight(google_df_processed, google_pred_list
+insight = generate_insight(google_df_processed, google_pred_list)
 
 with tab2.col2:
     st.write(' ')
@@ -243,7 +243,7 @@ tab1.warning('Disclaimer: This project is for research and educational purposes 
 import plotly.graph_objects as go
 from datetime import date
 
-with tab3: 
+with tab2: 
     st.header('SafeStock AI: Interactive Stock Dashboard')
     st.markdown(''':blue-background[📊 Technical Analysis: Explore trends with indicators like SMA, EMA, RSI, and OBV using interactive charts.]''')
 
@@ -266,16 +266,16 @@ RSI < 30: Oversold (may signal a buy opportunity).
 Purpose: Indicates potential reversals or continuation in price trends.  
 Use Case: Combine with other indicators to confirm breakout or correction signals.'''
 
-tab3.col1, tab3.col2, tab3.col3 = tab3.columns(3)
-with tab3.col1:
+tab2.col1, tab2.col2, tab2.col3 = tab2.columns(3)
+with tab2.col1:
     with st.popover("On-Balance Volume(OBV)"):
         st.markdown(obv_text)
 
-with tab3.col2:
+with tab2.col2:
     with st.popover("Moving Averages(SMA/EMA)"):
         st.markdown(ma_text)
       
-with tab3.col3:
+with tab2.col3:
     with st.popover("Relative Strength Index(RSI)"):
         st.markdown(rsi_text)
 
@@ -327,9 +327,9 @@ def plot_line_chart(data, x_col, y_cols, title):
 # Inputs
 START_DATE = "2015-01-01"
 ticker_list = ['AAPL', 'AMZN', 'AMD', 'GOOGL', 'INTC', 'META', 'MSFT', 'NVDA', 'TSLA']
-selected_stock = tab3.selectbox('Select stock:', ticker_list)
+selected_stock = tab2.selectbox('Select stock:', ticker_list)
 
-technical_indicator = tab3.selectbox(
+technical_indicator = tab2.selectbox(
     'Select Technical Indicator:',
     [
         'Open-High', 
@@ -357,5 +357,5 @@ elif technical_indicator == 'SMA/EMA':
 elif technical_indicator == 'RSI (Relative Strength Index)':
     fig = plot_line_chart(data, 'Date', ['RSI'], f"RSI for {selected_stock}")
 
-with tab3: 
+with tab2: 
     st.plotly_chart(fig)
