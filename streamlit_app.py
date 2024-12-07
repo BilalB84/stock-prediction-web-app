@@ -129,13 +129,13 @@ def create_feed_dset(df_processed, feature_list, n_past, model):
 
 
 # Call to get prediction
-apple_prediction_init = create_feed_dset(apple_df_processed, apple_features, 21, apple_model)
-amazon_prediction_init = create_feed_dset(amazon_df_processed, amazon_features, 15, amazon_model)
-google_prediction_init = create_feed_dset(google_df_processed, google_features, 21, google_model)
-intel_prediction_init = create_feed_dset(intel_df_processed, intel_features, 25, intel_model)
-meta_prediction_init = create_feed_dset(meta_df_processed, meta_features, 20, meta_model)
-microsoft_prediction_init = create_feed_dset(microsoft_df_processed, microsoft_features, 20, microsoft_model)
-tesla_prediction_init = create_feed_dset(tesla_df_processed, tesla_features, 15, tesla_model)
+apple_prediction_init, scaler = create_feed_dset(apple_df_processed, apple_features, 21, apple_model)
+amazon_prediction_init, scaler = create_feed_dset(amazon_df_processed, amazon_features, 15, amazon_model)
+google_prediction_init, scaler = create_feed_dset(google_df_processed, google_features, 21, google_model)
+intel_prediction_init, scaler = create_feed_dset(intel_df_processed, intel_features, 25, intel_model)
+meta_prediction_init, scaler = create_feed_dset(meta_df_processed, meta_features, 20, meta_model)
+microsoft_prediction_init, scaler = create_feed_dset(microsoft_df_processed, microsoft_features, 20, microsoft_model)
+tesla_prediction_init, scaler = create_feed_dset(tesla_df_processed, tesla_features, 15, tesla_model)
 
 # Inverse transformation for 5 features
 def inverse_transform_predictions1(prediction_init, scaler):
