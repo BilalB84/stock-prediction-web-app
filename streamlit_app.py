@@ -72,7 +72,7 @@ def df_process(ticker):
     # Add technical indicators via feature engineering:
     # Create 'garman_klass_volatility'
     df['garman_klass_volatility'] = ((np.log(df['high']) - np.log(df['low'])) ** 2) / 2 - \
-                                    (2 * np.log(2) - 1) * ((np.log(df['adj_close']) - np.log(df['open'])) ** 2)
+                                    (2 * np.log(2) - 1) * ((np.log(df['close']) - np.log(df['open'])) ** 2)
 
     # Create 'dollar_volume'
     df['dollar_volume'] = (df['close'] * df['volume']) / 1e6
