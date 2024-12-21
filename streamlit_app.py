@@ -92,7 +92,7 @@ def df_process(ticker):
     return df
 
 # Call to fetch and engineer data 
-apple_df_processed =  df_process(ticker_list[0])
+apple_df_processed = pd.read_csv('./apple_data.csv', index_col='Date', parse_dates=True)
 amazon_df_processed =  df_process(ticker_list[1])
 google_df_processed =  df_process(ticker_list[2])
 intel_df_processed =  df_process(ticker_list[3])
