@@ -68,21 +68,13 @@ def df_process(ticker):
                    'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}
     df = df.rename(columns = column_dict)
     df.index.names = ['date']
-
+    df.columns = df.columns.get_level_values(0) 
     # Add technical indicators via feature engineering:
     # Create 'garman_klass_volatility'
-    df['garman_klass_volatility'] = ((np.log(df['high']) - np.log(df['low'])) ** 2) / 2 - \
-                                    (2 * np.log(2) - 1) * ((np.log(df['close']) - np.log(df['open'])) ** 2)
+    df['garman_klass_volatility'] = ((np.log(df['high']) - np.log(df['low'])) ** 2) / 2 - (2 * np.log(2) - 1) * ((np.log(df['adj_close']) - np.log(df['open'])) ** 2)
 
     # Create 'dollar_volume'
     df['dollar_volume'] = (df['close'] * df['volume']) / 1e6
-
-    # Create 'rsi' column
-    delta = df['close'].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-    rs = gain / loss
-    df['rsi'] = 100 - (100 / (1 + rs))
 
     # Create 'ema' column
     df['ema'] = df['close'].ewm(span=14, adjust=False).mean()
