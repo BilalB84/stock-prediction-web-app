@@ -61,14 +61,16 @@ def df_process(ticker):
 
     # Download data between start and end dates
     df = yf.download(ticker, start = start, end = end)
-    df.columns = df.columns.droplevel(1)
+    # Fix column structure
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.droplevel(1)
+    df.columns.name = None  # Remove index name
 
     # Rename columns of the DataFrame
     column_dict = {'Open': 'open', 'High': 'high', 'Low': 'low',
                    'Close': 'close', 'Adj Close': 'adj_close', 'Volume': 'volume'}
     df = df.rename(columns = column_dict)
-    df.index.names = ['date']
-    df.columns = df.columns.get_level_values(0) 
+
     # Add technical indicators via feature engineering:
     # Create 'garman_klass_volatility'
     df['garman_klass_volatility'] = ((np.log(df['high']) - np.log(df['low'])) ** 2) / 2 - (2 * np.log(2) - 1) * ((np.log(df['adj_close']) - np.log(df['open'])) ** 2)
