@@ -37,7 +37,7 @@ microsoft_model = load_model('./models/Microsoft-LSTM-Model.h5', custom_objects=
 
 # List selected features
 apple_features = ['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
-amazon_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ema']
+amazon_features = ['close', 'volume', 'dollar_volume', 'obv', 'ema']
 google_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ma_3_days', 'macd']
 intel_features = ['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
 meta_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ema']
@@ -177,7 +177,7 @@ def generate_insight(df_processed, pred_list):
     container (streamlit.DeltaGenerator): Streamlit container for displaying the insight.
     """
     # Extract actual values from the DataFrame
-    actual_values = df_processed['adj_close'].values.tolist()
+    actual_values = df_processed['close'].values.tolist()
 
     # Ensure there is data to process
     if actual_values and pred_list:
