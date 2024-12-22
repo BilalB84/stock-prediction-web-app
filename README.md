@@ -24,9 +24,10 @@ The app is powered by:
 - Visualization: Interactive charts display historical trends, technical indicators, and model predictions.
 
 ## Screenshots of Web App
-[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab1-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab1-ss.png)
-[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab2-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab2-ss.png)
-[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab3-ss.png" width="600"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/tab3-ss.png)
+[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/stock-prediction-1.png" width="500"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/stock-prediction-1.png)
+[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/stock-prediction-2.png" width="500"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/stock-prediction-2.png)
+[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/stock-prediction-3.png" width="500"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/stock-prediction-3.png)
+[<img src="https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/dashboard-1.png" width="500"/>](https://github.com/SevilayMuni/stock-prediction-web-app/blob/master/images/dashboard-1.png)
 
 ## Models & Methodology
 The core of SafeStock AI is an LSTM neural network, specifically designed for sequential data like time series. The model is trained on historical stock prices and technical indicators to predict future movements.
