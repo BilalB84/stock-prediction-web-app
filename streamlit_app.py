@@ -35,15 +35,6 @@ intel_model = load_model('./models/Intel-2nd-LSTM-Model.h5', custom_objects={"LS
 meta_model = load_model('./models/Meta-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 microsoft_model = load_model('./models/Microsoft-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 
-# List selected features
-apple_features = ['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
-amazon_features = ['close', 'volume', 'dollar_volume', 'obv', 'ema']
-google_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ma_3_days', 'macd']
-intel_features = ['adj_close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
-meta_features = ['adj_close', 'volume', 'dollar_volume', 'obv', 'ema']
-microsoft_features = ['adj_close', 'volume', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
-tesla_features = ['adj_close', 'dollar_volume', 'obv', 'ema', 'ma_3_days']
-
 # Ticker List
 ticker_list = ['AAPL', 'AMZN', 'GOOG', 'INTC', 'META', 'MSFT', 'TSLA']
 
@@ -54,10 +45,11 @@ def On_Balance_Volume(Close, Volume):
     return OBV
 
 # Define function to retrieve data from Yahoo Finance API and conduct feature engineering
+@st.cache_data
 def df_process(ticker):
     # Determine end and start dates for dataset download
     end = datetime.now()
-    start = datetime(end.year, end.month - 2, end.day)
+    start = datetime(end.year, end.month - 5, end.day)
 
     # Download data between start and end dates
     df = yf.download(ticker, start = start, end = end)
@@ -92,13 +84,23 @@ def df_process(ticker):
     return df
 
 # Call to fetch and engineer data 
-apple_df_processed = pd.read_csv('./apple_data.csv', index_col='Date', parse_dates=True)
+apple_df_processed = df_process(ticker_list[0])
 amazon_df_processed =  df_process(ticker_list[1])
 google_df_processed =  df_process(ticker_list[2])
 intel_df_processed =  df_process(ticker_list[3])
 meta_df_processed =  df_process(ticker_list[4])
 microsoft_df_processed =  df_process(ticker_list[5])
 tesla_df_processed =  df_process(ticker_list[6])
+
+# List selected features
+apple_features = ['close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
+amazon_features = ['close', 'volume', 'dollar_volume', 'obv', 'ema']
+google_features = ['close', 'volume', 'dollar_volume', 'obv', 'ma_3_days', 'macd']
+intel_features = ['close', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
+meta_features = ['close', 'volume', 'dollar_volume', 'obv', 'ema']
+microsoft_features = ['close', 'volume', 'garman_klass_volatility', 'dollar_volume', 'obv', 'ma_3_days']
+tesla_features = ['close', 'dollar_volume', 'obv', 'ema', 'ma_3_days']
+
 
 # Define function scale data
 def create_feed_dset(df_processed, feature_list, n_past, model):
