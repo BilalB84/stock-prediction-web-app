@@ -49,7 +49,7 @@ def On_Balance_Volume(Close, Volume):
 def df_process(ticker):
     # Determine end and start dates for dataset download
     end = datetime.now()
-    start = datetime(end.year, end.month - 10, end.day)
+    start = datetime(end.year, end.month - 3, end.day)
 
     # Download data between start and end dates
     df = yf.download(ticker, start = start, end = end)
