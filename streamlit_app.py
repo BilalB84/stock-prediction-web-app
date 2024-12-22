@@ -27,7 +27,6 @@ class CustomLSTM(LSTM):
         super().__init__(*args, **kwargs)
 
 # Load Models
-@st.cache_resource
 apple_model = load_model('./models/Apple_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 google_model = load_model('./models/Google_Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
 tesla_model = load_model('./models/3rd-Tesla-LSTM-Model.h5', custom_objects={"LSTM": CustomLSTM}, compile=False)
