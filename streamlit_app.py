@@ -4,6 +4,7 @@ import numpy as np
 import yfinance as yf
 from datetime import datetime
 from datetime import date
+from dateutil.relativedelta import relativedelta
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
 import keras
@@ -49,7 +50,7 @@ def On_Balance_Volume(Close, Volume):
 def df_process(ticker):
     # Determine end and start dates for dataset download
     end = datetime.now()
-    start = datetime(end.year, end.month - 3, end.day)
+    start = end - relativedelta(months = 3)
 
     # Download data between start and end dates
     df = yf.download(ticker, start = start, end = end)
