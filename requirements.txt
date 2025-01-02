@@ -10,3 +10,4 @@ yfinance>=0.2.41
 plotly
 pytz
 ta
+python-dateutil
