@@ -255,10 +255,10 @@ with tab1.col2:
     st.markdown(insight, unsafe_allow_html=True)
 
 
-dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
-with tab1.container(border = True):
-    st.markdown(dedication, unsafe_allow_html=True)
-    st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
+# dedication = """<div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;"><i>The StockSense AI is dedicated to my dearest, Ceyhun Utku Girgin.</i>"""
+# with tab1.container(border = True):
+#    st.markdown(dedication, unsafe_allow_html=True)
+#    st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
 
 tab1.warning('Disclaimer: This project is for research and educational purposes only and is not intended for financial or investment advice.', icon="❗")
 
